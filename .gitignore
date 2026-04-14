@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# custom additions
+FWUEMIS_backup_2026_04_14_180001_2857312/

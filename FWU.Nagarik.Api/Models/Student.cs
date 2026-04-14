@@ -14,7 +14,7 @@ public class Student
     public string FirstName { get; set; } = string.Empty;
 
     [MaxLength(100)]
-    public string MiddleName { get; set; } = string.Empty;
+    public string? MiddleName { get; set; }
 
     [MaxLength(100)]
     public string LastName { get; set; } = string.Empty;
