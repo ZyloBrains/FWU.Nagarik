@@ -1,11 +1,66 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Services;
+using FWU.Nagarik.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+})
+.AddEntityFrameworkStores<AppDbContext>();
+
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere12345!";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "FWU.Nagarik.Api";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "FWU.Nagarik.Api";
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = "Identity.Application";
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+})
+.AddCookie("Identity.Application", options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.Cookie.Name = "FWU.Nagarik.Auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ApiUser", policy => policy.RequireAuthenticatedUser());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -14,6 +69,15 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+    
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    await SeedAdminUser(userManager);
+}
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -21,44 +85,35 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-app.MapGet("/api/student/verify", async (
-    string registration_number,
-    string dobAD,
-    IStudentService studentService) =>
-{
-    if (string.IsNullOrWhiteSpace(registration_number))
-        return Results.BadRequest(new { message = "registration_number is required" });
+app.UseAuthentication();
+app.UseAuthorization();
 
-    if (string.IsNullOrWhiteSpace(dobAD))
-        return Results.BadRequest(new { message = "dobAD is required" });
+ApiEndpoints.Map(app);
 
-    var result = await studentService.VerifyStudentAsync(registration_number, dobAD);
-
-    if (result == null)
-        return Results.NotFound(new { message = "No record found for the given registration number / DOB" });
-
-    return Results.Ok(result);
-})
-.WithName("VerifyStudent");
-
-app.MapGet("/api/student/transcript", async (
-    string registration_number,
-    string dobAD,
-    IStudentService studentService) =>
-{
-    if (string.IsNullOrWhiteSpace(registration_number))
-        return Results.BadRequest(new { message = "registration_number is required" });
-
-    if (string.IsNullOrWhiteSpace(dobAD))
-        return Results.BadRequest(new { message = "dobAD is required" });
-
-    var result = await studentService.GetTranscriptAsync(registration_number, dobAD);
-
-    if (result == null)
-        return Results.NotFound(new { message = "No record found for the given registration number / DOB" });
-
-    return Results.Ok(result);
-})
-.WithName("GetTranscript");
+app.MapGet("/dashboard", () => Results.Redirect("/dashboard/logs"));
+app.MapGet("/dashboard/{**path}", () => Results.Redirect("/dashboard/logs"));
 
 app.Run();
+
+static async Task SeedAdminUser(UserManager<IdentityUser> userManager)
+{
+    var adminEmail = "admin@fwu.edu.np";
+    var admin = await userManager.FindByEmailAsync(adminEmail);
+    
+    if (admin == null)
+    {
+        admin = new IdentityUser
+        {
+            UserName = "admin",
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+        
+        var result = await userManager.CreateAsync(admin, "Admin@123");
+        
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(admin, "Admin");
+        }
+    }
+}
