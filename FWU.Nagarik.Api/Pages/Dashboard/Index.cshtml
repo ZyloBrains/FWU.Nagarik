@@ -1,0 +1,34 @@
+@page
+@model FWU.Nagarik.Api.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Dashboard</h2>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Students</h5>
+                <h2 class="mb-0">@Model.TotalStudents</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Verifications</h5>
+                <h2 class="mb-0">@Model.TotalVerifications</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">API Keys</h5>
+                <h2 class="mb-0">@Model.TotalKeys</h2>
+            </div>
+        </div>
+    </div>
+</div>
