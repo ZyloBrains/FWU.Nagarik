@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -44,7 +46,7 @@ public static class ApiEndpoints
             return Results.Ok(new { token = tokenHandler.WriteToken(token) });
         });
 
-        app.MapGet("/api/student/verify", async (string registration_number, string dobAD, IStudentService studentService) =>
+        app.MapGet("/api/student/verify", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
         {
             if (string.IsNullOrWhiteSpace(registration_number))
                 return Results.BadRequest(new { message = "registration_number is required" });
@@ -61,7 +63,7 @@ public static class ApiEndpoints
         })
         .WithName("VerifyStudent");
 
-        app.MapGet("/api/student/transcript", async (string registration_number, string dobAD, IStudentService studentService) =>
+        app.MapGet("/api/student/transcript", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
         {
             if (string.IsNullOrWhiteSpace(registration_number))
                 return Results.BadRequest(new { message = "registration_number is required" });
