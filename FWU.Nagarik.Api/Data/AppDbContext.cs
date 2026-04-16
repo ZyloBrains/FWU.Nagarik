@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using FWU.Nagarik.Api.Models;
 
 namespace FWU.Nagarik.Api.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) 
-    : IdentityDbContext(options)
+    : IdentityDbContext<AppUser, IdentityRole, string>(options)
 {
 
     public DbSet<Student> Students { get; set; }
@@ -17,6 +18,43 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     {
         base.OnModelCreating(modelBuilder);
 
+        // Identity tables - remove AspNet prefix
+        modelBuilder.Entity<AppUser>(entity =>
+        {
+            entity.ToTable("Users");
+        });
+
+        modelBuilder.Entity<IdentityRole>(entity =>
+        {
+            entity.ToTable("Roles");
+        });
+
+        modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
+        {
+            entity.ToTable("UserClaims");
+        });
+
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.ToTable("UserLogins");
+        });
+
+        modelBuilder.Entity<IdentityUserToken<string>>(entity =>
+        {
+            entity.ToTable("UserTokens");
+        });
+
+        modelBuilder.Entity<IdentityRoleClaim<string>>(entity =>
+        {
+            entity.ToTable("RoleClaims");
+        });
+
+        modelBuilder.Entity<IdentityUserRole<string>>(entity =>
+        {
+            entity.ToTable("UserRoles");
+        });
+
+        // Custom entities
         modelBuilder.Entity<VerificationLog>(entity =>
         {
             entity.HasKey(e => e.Id);

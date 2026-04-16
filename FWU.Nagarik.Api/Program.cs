@@ -14,7 +14,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -74,8 +74,9 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
     
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    await SeedAdminUser(userManager);
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    await Seeder.SeedAdminUser(userManager, roleManager);
 }
 
 app.UseSwagger();
@@ -94,26 +95,3 @@ app.MapGet("/dashboard", () => Results.Redirect("/dashboard/logs"));
 app.MapGet("/dashboard/{**path}", () => Results.Redirect("/dashboard/logs"));
 
 app.Run();
-
-static async Task SeedAdminUser(UserManager<IdentityUser> userManager)
-{
-    var adminEmail = "admin@fwu.edu.np";
-    var admin = await userManager.FindByEmailAsync(adminEmail);
-    
-    if (admin == null)
-    {
-        admin = new IdentityUser
-        {
-            UserName = "admin",
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-        
-        var result = await userManager.CreateAsync(admin, "Admin@123");
-        
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(admin, "Admin");
-        }
-    }
-}
