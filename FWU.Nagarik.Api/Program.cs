@@ -24,14 +24,16 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddRazorPages();
+
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere12345!";
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "FWU.Nagarik.Api";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "FWU.Nagarik.Api";
 
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultSignInScheme = "Identity.Application";
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
 })
 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
@@ -45,8 +47,9 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
-})
-.AddCookie("Identity.Application", options =>
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -86,12 +89,12 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-ApiEndpoints.Map(app);
+app.MapRazorPages();
 
-app.MapGet("/dashboard", () => Results.Redirect("/dashboard/logs"));
-app.MapGet("/dashboard/{**path}", () => Results.Redirect("/dashboard/logs"));
+ApiEndpoints.Map(app);
 
 app.Run();
