@@ -1,20 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using FWU.Nagarik.Api.Data;
+using FWU.Nagarik.Api.Data.Constants;
 
 namespace FWU.Nagarik.Api.Pages.Dashboard;
 
-[Authorize]
-public class IndexModel : PageModel
+[Authorize(Roles = AppRoles.Admin)]
+public class IndexModel(AppDbContext db) : PageModel
 {
-    private readonly AppDbContext _db;
-
-    public IndexModel(AppDbContext db)
-    {
-        _db = db;
-    }
+    private readonly AppDbContext _db = db;
 
     public int TotalStudents { get; set; }
     public int TotalVerifications { get; set; }
@@ -22,8 +17,8 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        TotalStudents = await _db.Students.CountAsync();
-        TotalVerifications = await _db.VerificationLogs.CountAsync();
-        TotalKeys = await _db.ApiKeys.CountAsync();
+        TotalStudents = await _db.Students.AsNoTracking().CountAsync();
+        TotalVerifications = await _db.VerificationLogs.AsNoTracking().CountAsync();
+        TotalKeys = await _db.ApiKeys.AsNoTracking().CountAsync();
     }
 }

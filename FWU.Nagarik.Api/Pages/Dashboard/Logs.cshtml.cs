@@ -4,18 +4,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Models;
+using FWU.Nagarik.Api.Data.Constants;
 
 namespace FWU.Nagarik.Api.Pages.Dashboard;
 
-[Authorize]
-public class LogsModel : PageModel
+[Authorize(Roles = AppRoles.Admin)]
+public class LogsModel(AppDbContext db) : PageModel
 {
-    private readonly AppDbContext _db;
-
-    public LogsModel(AppDbContext db)
-    {
-        _db = db;
-    }
+    private readonly AppDbContext _db = db;
 
     public List<VerificationLog> Logs { get; set; } = new();
 
