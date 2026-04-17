@@ -1,23 +1,18 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Models;
+using FWU.Nagarik.Api.Data.Constants;
 
 namespace FWU.Nagarik.Api.Pages.Dashboard;
 
-[Authorize]
-public class KeysModel : PageModel
+[Authorize(Roles = AppRoles.Admin)]
+public class KeysModel(AppDbContext db) : PageModel
 {
-    private readonly AppDbContext _db;
+    private readonly AppDbContext _db = db;
 
-    public KeysModel(AppDbContext db)
-    {
-        _db = db;
-    }
-
-    public List<ApiKey> Keys { get; set; } = new();
+    public List<ApiKey> Keys { get; set; } = [];
 
     public async Task OnGetAsync()
     {

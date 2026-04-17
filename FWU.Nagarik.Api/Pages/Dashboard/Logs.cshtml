@@ -32,8 +32,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Regd No</th>
+                    <th>Dob</th>
                     <th>Name</th>
                     <th>Program</th>
                     <th>Status</th>
@@ -41,11 +42,13 @@
                 </tr>
             </thead>
             <tbody>
+                @{int i = 1;}
                 @foreach (var log in Model.Logs)
                 {
                     <tr>
-                        <td>@log.Id</td>
+                        <td>@(i++)</td>
                         <td>@log.RegdNo</td>
+                        <td>@log.DobAD</td>
                         <td>@log.FirstName @log.LastName</td>
                         <td>@log.ProgramName</td>
                         <td>
