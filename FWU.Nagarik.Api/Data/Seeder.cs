@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using FWU.Nagarik.Api.Data.Constants;
 
 public class Seeder
 {
@@ -11,7 +12,7 @@ public class Seeder
         {
             admin = new AppUser
             {
-                UserName = "admin",
+                UserName = adminEmail,
                 Email = adminEmail,
                 EmailConfirmed = true
             };
@@ -20,13 +21,12 @@ public class Seeder
 
             if (result.Succeeded)
             {
-                // check if the "Admin" role exists, if not create it
-                var roleExists = await roleManager.RoleExistsAsync("Admin");
+                var roleExists = await roleManager.RoleExistsAsync(AppRoles.Admin);
                 if (!roleExists)
                 {
-                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    await roleManager.CreateAsync(new IdentityRole(AppRoles.Admin));
                 }
-                await userManager.AddToRoleAsync(admin, "Admin");
+                await userManager.AddToRoleAsync(admin, AppRoles.Admin);
             }
         }
     }
