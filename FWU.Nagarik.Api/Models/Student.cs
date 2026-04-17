@@ -7,6 +7,8 @@ namespace FWU.Nagarik.Api.Models;
 public class Student
 {
     [Key]
+    public int Id { get; set; }
+
     [MaxLength(50)]
     public string RegdNo { get; set; } = string.Empty;
 
