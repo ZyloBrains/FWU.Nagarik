@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FWU.Nagarik.Api.Models;
 
-namespace FWU.Nagarik.Api.Pages;
+namespace FWU.Nagarik.Api.Pages.Account;
 
 [AllowAnonymous]
 public class LoginModel : PageModel
@@ -36,7 +36,7 @@ public class LoginModel : PageModel
 
         if (result.Succeeded)
         {
-            return RedirectToPage("/Dashboard/Keys");
+            return RedirectToPage("/Dashboard/Index");
         }
 
         if (result.IsLockedOut)

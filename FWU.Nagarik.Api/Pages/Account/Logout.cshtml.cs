@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FWU.Nagarik.Api.Models;
 
-namespace FWU.Nagarik.Api.Pages;
+namespace FWU.Nagarik.Api.Pages.Account;
 
 public class LogoutModel : PageModel
 {
@@ -18,6 +18,6 @@ public class LogoutModel : PageModel
     public async Task<IActionResult> OnGetAsync()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToPage("/Login");
+        return RedirectToPage("/Account/Login");
     }
 }

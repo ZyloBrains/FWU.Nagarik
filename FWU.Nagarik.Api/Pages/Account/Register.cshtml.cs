@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FWU.Nagarik.Api.Models;
 
-namespace FWU.Nagarik.Api.Pages;
+namespace FWU.Nagarik.Api.Pages.Account;
 
 [AllowAnonymous]
 public class RegisterModel : PageModel
@@ -55,7 +55,7 @@ public class RegisterModel : PageModel
         if (result.Succeeded)
         {
             await _signInManager.SignInAsync(user, isPersistent: false);
-            return RedirectToPage("/Dashboard/Keys");
+            return RedirectToPage("/Dashboard/Index");
         }
 
         foreach (var error in result.Errors)
