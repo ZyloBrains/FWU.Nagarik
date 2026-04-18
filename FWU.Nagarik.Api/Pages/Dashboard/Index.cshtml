@@ -4,31 +4,90 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<h2>Dashboard</h2>
-
-<div class="row mt-4">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary">
-            <div class="card-body">
-                <h5 class="card-title">Total Students</h5>
-                <h2 class="mb-0">@Model.TotalStudents</h2>
+<div class="row g-4">
+    <div class="col-md-3">
+        <a asp-page="/Dashboard/Students" class="text-decoration-none">
+            <div class="card h-100" style="border-left: 5px solid #4e73df; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted h5">Total Students</div>
+                            <div class="mb-0 fw-bold display-6">@Model.TotalStudents</div>
+                        </div>
+                        <div class="rounded p-4" style="background-color: rgba(78, 115, 223, 0.1);">
+                            <i class="bi bi-people-fill fs-1 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-success">
-            <div class="card-body">
-                <h5 class="card-title">Verifications</h5>
-                <h2 class="mb-0">@Model.TotalVerifications</h2>
+    <div class="col-md-3">
+        <a asp-page="/Dashboard/Logs" class="text-decoration-none">
+            <div class="card h-100" style="border-left: 5px solid #1cc88f; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted h5">Verifications</div>
+                            <div class="mb-0 fw-bold display-6">@Model.TotalVerifications</div>
+                        </div>
+                        <div class="rounded p-4" style="background-color: rgba(28, 200, 143, 0.1);">
+                            <i class="bi bi-shield-check fs-1 text-success"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
-    <div class="col-md-4">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">API Keys</h5>
-                <h2 class="mb-0">@Model.TotalKeys</h2>
+    <div class="col-md-3">
+        <a asp-page="/Dashboard/StudentRequests" class="text-decoration-none">
+            <div class="card h-100" style="border-left: 5px solid #36b9cc; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted h5">Student Requests</div>
+                            <div class="mb-0 fw-bold display-6">@Model.TotalStudentRequests</div>
+                        </div>
+                        <div class="rounded p-4" style="background-color: rgba(54, 185, 204, 0.1);">
+                            <i class="bi bi-file-earmark-text-fill fs-1" style="color: #36b9cc;"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-page="/Dashboard/Keys" class="text-decoration-none">
+            <div class="card h-100" style="border-left: 5px solid #f6c23e; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted h5">API Keys</div>
+                            <div class="mb-0 fw-bold display-6">@Model.TotalKeys</div>
+                        </div>
+                        <div class="rounded p-4" style="background-color: rgba(246, 194, 62, 0.1);">
+                            <i class="bi bi-key-fill fs-1" style="color: #dda20a;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a asp-page="/Account/Users" class="text-decoration-none">
+            <div class="card h-100" style="border-left: 5px solid #6f42c1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted h5">System Admins</div>
+                            <div class="mb-0 fw-bold display-6">@Model.TotalAdmins</div>
+                        </div>
+                        <div class="rounded p-4" style="background-color: rgba(111, 66, 193, 0.1);">
+                            <i class="bi bi-shield-lock-fill fs-1" style="color: #6f42c1;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
