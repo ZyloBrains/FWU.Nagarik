@@ -108,6 +108,7 @@ app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "FWU Nagarik API v1");
+    options.DocumentTitle = "FWU Nagarik API Documentation";
     options.RoutePrefix = "docs";
 });
 

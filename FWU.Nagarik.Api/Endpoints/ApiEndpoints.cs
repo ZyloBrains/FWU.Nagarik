@@ -17,10 +17,10 @@ public static class ApiEndpoints
                 return Results.BadRequest(new { message = "apiKey is required" });
 
             var keyRecord = await db.ApiKeys.FirstOrDefaultAsync(k => k.Key == apiKey && k.IsActive);
-            
+
             if (keyRecord == null)
                 return Results.Unauthorized();
-            
+
             if (keyRecord.ExpiresAt.HasValue && keyRecord.ExpiresAt < DateTime.UtcNow)
                 return Results.Unauthorized();
 
@@ -44,7 +44,10 @@ public static class ApiEndpoints
 
             var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             return Results.Ok(new { token = tokenHandler.WriteToken(token) });
-        });
+        })
+        .WithName("GetToken")
+        .WithSummary("Generates JWT token for API key authentication")
+        .WithDescription("Generates a JWT token for valid API key authentication.");
 
         app.MapGet("/api/student/verify", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
         {
@@ -61,7 +64,9 @@ public static class ApiEndpoints
 
             return Results.Ok(result);
         })
-        .WithName("VerifyStudent");
+        .WithName("VerifyStudent")
+        .WithSummary("Verifies student details")
+        .WithDescription("Verifies student details based on registration number and date of birth.");
 
         app.MapGet("/api/student/transcript", [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
         {
@@ -78,6 +83,8 @@ public static class ApiEndpoints
 
             return Results.Ok(result);
         })
-        .WithName("GetTranscript");
+        .WithName("GetTranscript")
+        .WithSummary("Retrieves student transcript")
+        .WithDescription("Retrieves the transcript for a student based on registration number and date of birth.");
     }
 }
