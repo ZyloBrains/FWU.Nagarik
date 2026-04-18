@@ -8,42 +8,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body { background-color: #f5f6fa; }
-        .sidebar { min-height: 100vh; background: #1a1a2e; }
-        .sidebar a { color: #fff; text-decoration: none; padding: 12px 20px; display: block; }
-        .sidebar a:hover, .sidebar a.active { background: #16213e; border-left: 3px solid #0f3460; }
+        .sidebar { min-height: 100vh; background: #2d3e50; transition: all 0.3s; overflow: hidden; }
+        .sidebar.collapsed { width: 60px; }
+        .sidebar.collapsed .sidebar-text { display: none; }
+        .sidebar.collapsed .sidebar-section { display: none; }
+        .sidebar.collapsed .sidebar-divider { display: none; }
+        .sidebar a { color: #fff; text-decoration: none; padding: 12px 15px; display: block; white-space: nowrap; }
+        .sidebar a:hover, .sidebar a.active { background: #4a6fa5; }
         .nav-icon { margin-right: 10px; }
-        .sidebar-section { padding: 10px 20px; font-size: 11px; text-transform: uppercase; color: #6c757d; font-weight: bold; }
-        .sidebar-divider { border-top: 1px solid #6c757d; margin: 10px 0; }
+        .sidebar-section { padding: 10px 15px; font-size: 11px; text-transform: uppercase; color: #a0a0a0; font-weight: bold; }
+        .sidebar-divider { border-top: 1px solid #4a6fa5; margin: 10px 0; }
+        .sidebar-toggle { position: absolute; top: 10px; right: 10px; z-index: 100; }
+        .content-area { transition: margin-left 0.3s; }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2 sidebar p-0">
-                <div class="text-center py-4 border-bottom border-secondary">
-                    <h5 class="text-white">FWU Admin</h5>
+            <div class="col-md-2 sidebar p-0" id="sidebar">
+                <div class="text-center py-4 border-bottom border-secondary position-relative">
+                    <button class="btn btn-outline-light position-absolute" style="top: 50%; right: 10px; transform: translateY(-50%);" onclick="toggleSidebar()">
+                        <i class="bi bi-chevron-left" id="toggleIcon"></i>
+                    </button>
+                    <h5 class="text-white sidebar-text">FWU Admin</h5>
                 </div>
                 <nav>
-                    <div class="sidebar-section">Dashboard</div>
-                    <a href="/Dashboard"><i class="bi bi-speedometer2 nav-icon"></i> Dashboard</a>
-                    <a href="/Dashboard/Students"><i class="bi bi-people nav-icon"></i> Students</a>
-                    <a href="/Dashboard/Logs"><i class="bi bi-journal-text nav-icon"></i> Verification Logs</a>
-                    <a href="/Dashboard/Keys"><i class="bi bi-key nav-icon"></i> API Keys</a>
+                    <div class="sidebar-section sidebar-text">Dashboard</div>
+                    <a asp-area="" asp-page="/Dashboard"><i class="bi bi-speedometer2 nav-icon"></i><span class="sidebar-text"> Dashboard</span></a>
+                    <a asp-area="" asp-page="/Dashboard/Students"><i class="bi bi-people nav-icon"></i><span class="sidebar-text"> Students</span></a>
+                    <a asp-area="" asp-page="/Dashboard/Logs"><i class="bi bi-journal-text nav-icon"></i><span class="sidebar-text"> Verification Logs</span></a>
+                    <a asp-area="" asp-page="/Dashboard/Keys"><i class="bi bi-key nav-icon"></i><span class="sidebar-text"> API Keys</span></a>
                     
                     <div class="sidebar-divider"></div>
-                    <div class="sidebar-section">Account</div>
-                    <a href="/Account/Manage"><i class="bi bi-person nav-icon"></i> Profile</a>
-                    <a href="/Account/Users"><i class="bi bi-people nav-icon"></i> Users</a>
-                    <a href="/Account/Roles"><i class="bi bi-shield nav-icon"></i> Roles</a>
-                    <a href="/Account/Logout"><i class="bi bi-box-arrow-right nav-icon"></i> Logout</a>
+                    <div class="sidebar-section sidebar-text">Account</div>
+                    <a asp-area="" asp-page="/Account/Manage"><i class="bi bi-person nav-icon"></i><span class="sidebar-text"> Profile</span></a>
+                    <a asp-area="" asp-page="/Account/Users"><i class="bi bi-people nav-icon"></i><span class="sidebar-text"> Users</span></a>
+                    <a asp-area="" asp-page="/Account/Roles"><i class="bi bi-shield nav-icon"></i><span class="sidebar-text"> Roles</span></a>
+                    <a asp-area="" asp-page="/Account/Logout"><i class="bi bi-box-arrow-right nav-icon"></i><span class="sidebar-text"> Logout</span></a>
                 </nav>
             </div>
-            <div class="col-md-10 p-4">
+            <div class="col-md-10 p-4 content-area" id="content">
                 @RenderBody()
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const icon = document.getElementById('toggleIcon');
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('col-md-10');
+            content.classList.toggle('col-md-11');
+            icon.classList.toggle('bi-chevron-left');
+            icon.classList.toggle('bi-chevron-right');
+        }
+        document.querySelectorAll('.sidebar a').forEach(link => {
+            if (link.getAttribute('href') === window.location.pathname) {
+                link.classList.add('active');
+            }
+        });
+    </script>
 </body>
 </html>

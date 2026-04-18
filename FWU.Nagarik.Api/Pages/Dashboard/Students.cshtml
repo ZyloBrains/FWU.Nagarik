@@ -3,8 +3,12 @@
 @{
     ViewData["Title"] = "Students";
 }
+<style>
+    .table-sm td, .table-sm th { font-size: 0.85rem; padding: 0.25rem; }
+    .table-sm td { vertical-align: middle; }
+</style>
 
-<h2><i class="bi bi-people"></i> Students</h2>
+<h2><i class="bi bi-people"></i> FWU Student Admissions</h2>
 
 <form method="get" class="mb-4">
     <div class="row g-3">
@@ -33,11 +37,11 @@
             </select>
         </div>
         <div class="col-md-2">
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary" title="Filter">
+            <div class="d-flex justify-content-between gap-2">
+                <button type="submit" class="btn btn-primary w-100" title="Filter">
                     <i class="bi bi-funnel"></i> Filter
                 </button>
-                <a asp-page="./Students" class="btn btn-secondary" title="Clear">
+                <a asp-page="./Students" class="btn btn-secondary w-100" title="Clear">
                     <i class="bi bi-x-circle"></i> Clear
                 </a>
             </div>
@@ -52,7 +56,7 @@
 
 <div class="card">
     <div class="card-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-sm">
             <thead>
                 <tr>
                     <th>Regd. No.</th>
@@ -65,7 +69,7 @@
                     <th>CGPA</th>
                     <th>Graduate Year</th>
                     <th>Status</th>
-                    <th>Actions</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -83,7 +87,7 @@
                         <td>@student.GraduateYear</td>
                         <td>@student.StudentStatus</td>
                         <td>
-                            <button type="button" class="btn btn-outline-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editStudentModal" 
+                            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editStudentModal" 
                                 data-regdno="@student.RegdNo" data-firstname="@student.FirstName" data-middlename="@student.MiddleName" data-lastname="@student.LastName"
                                 data-dobad="@student.DobAD" data-level="@student.Level" data-intakeyear="@student.IntakeYear" data-programname="@student.ProgramName"
                                 data-school="@student.School" data-cgpa="@student.CgpaScore" data-graduateyear="@student.GraduateYear" data-status="@student.StudentStatus"
