@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
 
     public DbSet<Student> Students { get; set; }
     public DbSet<StudentMark> StudentMarks { get; set; }
+    public DbSet<StudentRequest> StudentRequests { get; set; }
     public DbSet<VerificationLog> VerificationLogs { get; set; }
     public DbSet<ApiKey> ApiKeys { get; set; }
 
