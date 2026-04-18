@@ -90,6 +90,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentRequestSyncService, StudentRequestSyncService>();
 
 var app = builder.Build();
 

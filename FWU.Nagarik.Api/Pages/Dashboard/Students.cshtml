@@ -1,0 +1,242 @@
+@page
+@model FWU.Nagarik.Api.Pages.Dashboard.StudentsModel
+@{
+    ViewData["Title"] = "Students";
+}
+<style>
+    .table-sm td, .table-sm th { font-size: 0.85rem; padding: 0.25rem; }
+    .table-sm td { vertical-align: middle; }
+</style>
+
+<h2><i class="bi bi-people"></i> FWU Student Admissions</h2>
+
+<form method="get" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <input type="text" name="studentName" class="form-control" placeholder="Student Name" value="@Model.StudentName">
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="intakeYear" class="form-control" placeholder="Intake Year" value="@Model.IntakeYear">
+        </div>
+        <div class="col-md-2">
+            <select name="level" class="form-select">
+                <option value="">-- Select Level --</option>
+                @foreach (var level in Model.Levels)
+                {
+                    <option value="@level" selected="@(Model.Level == level)">@level</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="programName" class="form-select">
+                <option value="">-- Select Program --</option>
+                @foreach (var program in Model.Programs)
+                {
+                    <option value="@program" selected="@(Model.ProgramName == program)">@program</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <div class="d-flex justify-content-between gap-2">
+                <button type="submit" class="btn btn-primary w-100" title="Filter">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+                <a asp-page="./Students" class="btn btn-secondary w-100" title="Clear">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Regd. No.</th>
+                    <th>Name</th>
+                    <th>DOB (AD)</th>
+                    <th>Level</th>
+                    <th>Intake Year</th>
+                    <th>Program</th>
+                    <th>School</th>
+                    <th>CGPA</th>
+                    <th>Graduate Year</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>@student.RegdNo</td>
+                        <td>@student.FirstName @student.MiddleName @student.LastName</td>
+                        <td>@student.DobAD</td>
+                        <td>@student.Level</td>
+                        <td>@student.IntakeYear</td>
+                        <td>@student.ProgramName</td>
+                        <td>@student.School</td>
+                        <td>@student.CgpaScore</td>
+                        <td>@student.GraduateYear</td>
+                        <td>@student.StudentStatus</td>
+                        <td>
+                            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editStudentModal" 
+                                data-regdno="@student.RegdNo" data-firstname="@student.FirstName" data-middlename="@student.MiddleName" data-lastname="@student.LastName"
+                                data-dobad="@student.DobAD" data-level="@student.Level" data-intakeyear="@student.IntakeYear" data-programname="@student.ProgramName"
+                                data-school="@student.School" data-cgpa="@student.CgpaScore" data-graduateyear="@student.GraduateYear" data-status="@student.StudentStatus"
+                                onclick="setStudent(this)" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        
+        @if (!Model.Students.Any())
+        {
+            <p class="text-center text-muted py-4">No students found</p>
+        }
+    </div>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Students" asp-route-page="1" asp-route-studentName="@Model.StudentName" asp-route-intakeYear="@Model.IntakeYear" asp-route-level="@Model.Level" asp-route-programName="@Model.ProgramName">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Students" asp-route-page="@(Model.CurrentPage - 1)" asp-route-studentName="@Model.StudentName" asp-route-intakeYear="@Model.IntakeYear" asp-route-level="@Model.Level" asp-route-programName="@Model.ProgramName">Previous</a>
+                </li>
+            }
+            
+            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./Students" asp-route-page="@i" asp-route-studentName="@Model.StudentName" asp-route-intakeYear="@Model.IntakeYear" asp-route-level="@Model.Level" asp-route-programName="@Model.ProgramName">@i</a>
+                </li>
+            }
+            
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Students" asp-route-page="@(Model.CurrentPage + 1)" asp-route-studentName="@Model.StudentName" asp-route-intakeYear="@Model.IntakeYear" asp-route-level="@Model.Level" asp-route-programName="@Model.ProgramName">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Students" asp-route-page="@Model.TotalPages" asp-route-studentName="@Model.StudentName" asp-route-intakeYear="@Model.IntakeYear" asp-route-level="@Model.Level" asp-route-programName="@Model.ProgramName">Last</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+<p class="text-center text-muted">Showing @Model.Students.Count of @Model.TotalCount students</p>
+
+<div class="modal fade" id="editStudentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Edit Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Cancel"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" method="post">
+                    <input type="hidden" name="handler" value="Update" />
+                    <input type="hidden" id="regdNo" name="regdNo">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">First Name</label>
+                            <input type="text" id="firstName" name="firstName" class="form-control" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Middle Name</label>
+                            <input type="text" id="middleName" name="middleName" class="form-control">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">DOB (AD)</label>
+                            <input type="text" id="dobAD" name="dobAD" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Level</label>
+                            <input type="text" id="level" name="level" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Intake Year</label>
+                            <input type="text" id="intakeYear" name="intakeYear" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Program Name</label>
+                            <input type="text" id="programName" name="programName" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">School</label>
+                            <input type="text" id="school" name="school" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CGPA Score</label>
+                            <input type="number" step="0.01" id="cgpaScore" name="cgpaScore" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Graduate Year</label>
+                            <input type="text" id="graduateYear" name="graduateYear" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Status</label>
+                            <input type="text" id="status" name="status" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" title="Cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+                <button type="submit" form="editForm" class="btn btn-primary" title="Save">
+                    <i class="bi bi-check-circle"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setStudent(btn) {
+            document.getElementById('regdNo').value = btn.dataset.regdno || '';
+            document.getElementById('firstName').value = btn.dataset.firstname || '';
+            document.getElementById('middleName').value = btn.dataset.middlename || '';
+            document.getElementById('lastName').value = btn.dataset.lastname || '';
+            document.getElementById('dobAD').value = btn.dataset.dobad || '';
+            document.getElementById('level').value = btn.dataset.level || '';
+            document.getElementById('intakeYear').value = btn.dataset.intakeyear || '';
+            document.getElementById('programName').value = btn.dataset.programname || '';
+            document.getElementById('school').value = btn.dataset.school || '';
+            document.getElementById('cgpaScore').value = btn.dataset.cgpa || '';
+            document.getElementById('graduateYear').value = btn.dataset.graduateyear || '';
+            document.getElementById('status').value = btn.dataset.status || '';
+        }
+    </script>
+}
