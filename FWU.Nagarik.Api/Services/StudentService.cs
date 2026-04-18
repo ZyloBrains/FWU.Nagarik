@@ -9,42 +9,49 @@ public interface IStudentService
     Task<TranscriptResponse?> GetTranscriptAsync(string registrationNumber, string dobAD);
 }
 
-public class StudentService(Data.AppDbContext dbContext, ILogger<StudentService> logger) : IStudentService
+public class StudentService(Data.AppDbContext dbContext) : IStudentService
 {
     private readonly Data.AppDbContext _dbContext = dbContext;
-    private readonly ILogger<StudentService> _logger = logger;
 
     public async Task<StudentResponse?> VerifyStudentAsync(string registrationNumber, string dobAD)
     {
-        var student = await _dbContext.Students
-            .FirstOrDefaultAsync(s => s.RegdNo == registrationNumber && s.DobAD == dobAD);
+        var studentAdmissions = await _dbContext.Students
+            .Where(s => s.RegdNo == registrationNumber && s.DobAD == dobAD)
+            .ToListAsync();
 
-        await LogVerification(registrationNumber, student, student != null ? "Success" : "NotFound", null);
-
-        if (student == null)
-            return null;
-
-        var studentData = new StudentData
+        if (studentAdmissions == null || studentAdmissions.Count == 0)
         {
-            RegdNo = student.RegdNo,
-            FirstName = student.FirstName,
-            MiddleName = student.MiddleName,
-            LastName = student.LastName,
-            DobAD = student.DobAD,
-            ProgramName = student.ProgramName,
-            IntakeYear = student.IntakeYear,
-            StudentStatus = student.StudentStatus,
-            Level = student.Level,
-            School = student.School,
-            CgpaScore = student.CgpaScore,
-            GraduateYear = student.GraduateYear
-        };
+            await LogVerification(registrationNumber, null, "NotFound", null);
+            return null;
+        }
+
+        List<StudentData> studentDataList = [];
+
+        foreach (var student in studentAdmissions)
+        {
+            await LogVerification(registrationNumber, student, "Success", null);
+            studentDataList.Add(new StudentData
+            {
+                RegdNo = student.RegdNo,
+                FirstName = student.FirstName,
+                MiddleName = student.MiddleName ?? string.Empty,
+                LastName = student.LastName,
+                DobAD = student.DobAD,
+                ProgramName = student.ProgramName,
+                IntakeYear = student.IntakeYear,
+                StudentStatus = student.StudentStatus,
+                Level = student.Level,
+                School = student.School,
+                CgpaScore = student.CgpaScore,
+                GraduateYear = student.GraduateYear
+            });
+        }
 
         return new StudentResponse
         {
             Data = registrationNumber,
             Message = "Success",
-            OtherData = [studentData]
+            OtherData = studentDataList
         };
     }
 
@@ -101,7 +108,7 @@ public class StudentService(Data.AppDbContext dbContext, ILogger<StudentService>
         {
             RegdNo = student.RegdNo,
             FirstName = student.FirstName,
-            MiddleName = student.MiddleName,
+            MiddleName = student.MiddleName ?? string.Empty,
             LastName = student.LastName,
             ProgramName = student.ProgramName,
             IntakeYear = student.IntakeYear,
