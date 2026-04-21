@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - Far Western University</title>
+    <link rel="stylesheet" href="~/css/common.css">
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    <div class="certificate">
+        <div class="border-outer"></div>
+        <div class="border-inner"></div>
+
+        <div class="corner top-left">
+            <svg class="corner-svg" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="none" stroke="#1a365d" stroke-width="2" />
+            </svg>
+        </div>
+        <div class="corner top-right">
+            <svg class="corner-svg" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="none" stroke="#1a365d" stroke-width="2" />
+            </svg>
+        </div>
+        <div class="corner bottom-left">
+            <svg class="corner-svg" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="none" stroke="#1a365d" stroke-width="2" />
+            </svg>
+        </div>
+        <div class="corner bottom-right">
+            <svg class="corner-svg" viewBox="0 0 100 100">
+                <rect x="10" y="10" width="80" height="80" fill="none" stroke="#1a365d" stroke-width="2" />
+            </svg>
+        </div>
+        @RenderBody()
+    </div>
+</body>
+
+</html>

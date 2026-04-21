@@ -1,0 +1,105 @@
+@page
+@{
+    Layout = "_LayoutCertificate";
+    ViewData["Title"] = "Migration Certificate";
+}
+
+<style>
+    .certificate {
+        padding: 22mm 28mm;
+    }
+
+    .university-name {
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+
+    .logo-container {
+        margin: 15px 0;
+    }
+
+    .main-logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    .doc-title {
+        font-size: 22px;
+        margin: 20px 0 30px;
+        padding-bottom: 10px;
+    }
+
+    .form-body {
+        font-size: 14px;
+        line-height: 2.2;
+    }
+
+    .form-body p {
+        margin-bottom: 18px;
+    }
+
+    .sig-block {
+        width: 30%;
+    }
+
+    .seal-placeholder {
+        width: 70px;
+        height: 70px;
+        font-size: 8px;
+        line-height: 1.3;
+    }
+</style>
+
+<div class="cert-no">
+    Serial No: <span>2312</span>
+</div>
+
+<div class="content">
+    <div class="university-header">
+        <div class="university-name">Far Western University</div>
+        <div class="university tagline">Mahendranagar, Kanchanpur, Nepal</div>
+    </div>
+
+    <div class="logo-container">
+        <svg class="main-logo" viewBox="0 0 100 100">
+            <image href="/images/fwu.png" x="2" y="2" width="96" height="96" />
+            <circle cx="50" cy="50" r="49" fill="none" stroke="#1a365d" stroke-width="1" />
+        </svg>
+    </div>
+
+    <div class="doc-title">Migration Certificate</div>
+
+    <div class="form-body">
+        <p>
+            <span class="data-highlight" style="min-width: 350px;">AAISHA KUMARI KUNWAR</span>,
+            student of the <span class="data-highlight">KAILALI MULTIPLE CAMPUS</span> with
+            <span class="label">F.W.U. Registration No:</span> <span class="data-highlight">MG-2022-1-16-2142</span>
+            is informed that this University has no objection to his/her prosecuting studies at any other
+            University.
+        </p>
+
+        <p>
+            <span class="label">Date of Birth:</span> <span class="data-highlight">1946-08-17</span> B.S.
+            (<span class="data-highlight">2003-05-01</span> A.D.)
+        </p>
+    </div>
+
+    <div class="footer">
+        <div class="sig-row">
+            <div class="sig-block">
+                <div class="sig-line">Prepared by</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line">Checked by</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line">Controller of Examinations</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>DATE OF ISSUE: <span class="date-val">January 21, 2026</span></span>
+            <div class="seal-placeholder">University<br>Seal</div>
+        </div>
+    </div>
+</div>

@@ -20,10 +20,10 @@ body {
     font-family: 'Times New Roman', serif;
 }
 
-.certificate, .transcript-page {
+.certificate {
     width: 210mm;
     min-height: 297mm;
-    padding: 22mm 28mm;
+    padding: 15mm 15mm;
     box-sizing: border-box;
     position: relative;
     color: #1a1a1a;
@@ -187,7 +187,6 @@ body {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 30px;
 }
 
 .sig-block {
@@ -207,9 +206,9 @@ body {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 520px;
     font-size: 11px;
     color: #4a5568;
+    margin-top: 20px;
 }
 
 .date-val {
