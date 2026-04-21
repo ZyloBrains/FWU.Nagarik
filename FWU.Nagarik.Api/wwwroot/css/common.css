@@ -1,0 +1,360 @@
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Times New Roman', serif;
+}
+
+.certificate, .transcript-page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 22mm 28mm;
+    box-sizing: border-box;
+    position: relative;
+    color: #1a1a1a;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.border-outer {
+    position: absolute;
+    top: 8mm;
+    bottom: 8mm;
+    left: 8mm;
+    right: 8mm;
+    border: 3px solid #1a365d;
+}
+
+.border-inner {
+    position: absolute;
+    top: 14mm;
+    bottom: 14mm;
+    left: 14mm;
+    right: 14mm;
+    border: 1px solid #1a365d;
+}
+
+.corner {
+    position: absolute;
+    width: 16mm;
+    height: 16mm;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.corner-svg {
+    width: 16mm;
+    height: 16mm;
+}
+
+.top-left { top: 8mm; left: 8mm; transform: translate(-50%, -50%); }
+.top-right { top: 8mm; right: 8mm; transform: translate(50%, -50%); }
+.bottom-left { bottom: 8mm; left: 8mm; transform: translate(-50%, 50%); }
+.bottom-right { bottom: 8mm; right: 8mm; transform: translate(50%, 50%); }
+
+.content, .header-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.university-header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.university-name {
+    text-align: center;
+    font-family: 'Garamond', 'Times New Roman', serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #1a365d;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.university tagline, .tagline {
+    font-size: 12px;
+    color: #4a5568;
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+.office-text {
+    font-size: 14px;
+    color: #1a365d;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.logo-container {
+    margin: 15px 0;
+}
+
+.main-logo {
+    width: 100px;
+    height: 100px;
+}
+
+.doc-title {
+    font-family: 'Garamond', 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin: 20px 0 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c9a227;
+}
+
+.cert-no {
+    position: absolute;
+    top: 20mm;
+    right: 28mm;
+    font-size: 10px;
+    color: #4a5568;
+}
+
+.cert-no span {
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+.form-body {
+    font-size: 14px;
+    line-height: 2.2;
+    text-align: justify;
+    color: #2d3748;
+    width: 100%;
+    max-width: 600px;
+}
+
+.form-body p {
+    text-indent: 0;
+    margin-bottom: 18px;
+}
+
+.label {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.data-highlight {
+    font-weight: bold;
+    border-bottom: 1px solid #2d3748;
+    padding: 0 8px 2px;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+    color: #1a1a1a;
+}
+
+.location {
+    margin-top: 25px;
+    font-size: 12px;
+    text-align: right;
+    color: #4a5568;
+    letter-spacing: 1px;
+}
+
+.footer {
+    margin-top: 45px;
+    width: 100%;
+}
+
+.sig-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.sig-block {
+    text-align: center;
+    width: 30%;
+}
+
+.sig-line {
+    border-top: 1px solid #2d3748;
+    padding-top: 6px;
+    font-size: 11px;
+    color: #2d3748;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 520px;
+    font-size: 11px;
+    color: #4a5568;
+}
+
+.date-val {
+    border-bottom: 1px solid #a0aec0;
+    min-width: 140px;
+    padding-bottom: 2px;
+}
+
+.seal-placeholder {
+    width: 70px;
+    height: 70px;
+    border: 2px solid #1a365d;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: #1a365d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 10px;
+    color: #4a5568;
+    margin-bottom: 8px;
+}
+
+.serial-no {
+    font-weight: bold;
+    color: #1a1a1a;
+}
+
+.student-info-box {
+    border: 1px solid #1a365d;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.info-col {
+    width: 48%;
+    display: grid;
+    grid-template-columns: 90px auto;
+    gap: 4px;
+    line-height: 1.4;
+}
+
+.val {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.grades-wrapper {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+}
+
+.grades-half {
+    width: 49%;
+    display: flex;
+    flex-direction: column;
+    font-size: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+}
+
+th, td {
+    border: 1px solid #333;
+    padding: 2px 4px;
+    text-align: center;
+    font-size: 7.5px;
+}
+
+.col-code { width: 14%; text-align: left; font-weight: bold; }
+.col-title { width: 42%; text-align: left; }
+.col-cr, .col-grade, .col-val, .col-point { width: 10%; font-weight: bold; }
+
+th {
+    font-weight: bold;
+    background-color: #f8f8f8;
+}
+
+.semester-header {
+    background-color: #e8eef4;
+    font-weight: bold;
+    font-size: 8px;
+    text-transform: uppercase;
+}
+
+.total-row td {
+    font-weight: bold;
+    border-top: 1px solid #000;
+}
+
+.total-label {
+    text-align: right;
+    padding-right: 8px;
+}
+
+.gpa-row td {
+    font-weight: bold;
+    border-top: 1.5px solid #1a365d;
+}
+
+.gpa-label {
+    text-align: right;
+    padding-right: 8px;
+    font-size: 8px;
+}
+
+.gpa-val {
+    font-size: 9px;
+}
+
+.hologram-placeholder {
+    position: absolute;
+    right: 25px;
+    top: 55px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d4af37 0%, #aa7c11 50%, #d4af37 100%);
+    border: 1px dashed #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 7px;
+    color: #fff;
+    text-align: center;
+    z-index: 3;
+}
