@@ -34,7 +34,7 @@ public class StudentsModel(AppDbContext db) : PageModel
 
     public int TotalPages { get; set; }
     public int TotalCount { get; set; }
-    public const int PageSize = 200;
+    public const int PageSize = 100;
 
     public async Task OnGetAsync()
     {
