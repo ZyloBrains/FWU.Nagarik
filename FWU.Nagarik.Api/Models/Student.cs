@@ -44,4 +44,16 @@ public class Student
 
     [MaxLength(10)]
     public string? GraduateYear { get; set; }
+
+    [MaxLength(50)]
+    public string Faculty { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string CampusName { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string CampusLocation { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string CourseDuration { get; set; } = string.Empty;
 }

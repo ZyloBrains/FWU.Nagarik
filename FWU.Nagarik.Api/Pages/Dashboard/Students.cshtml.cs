@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Data.Constants;
 using FWU.Nagarik.Api.Models;
+using FWU.Nagarik.Api.Services;
 
 namespace FWU.Nagarik.Api.Pages.Dashboard;
 
 [Authorize(Roles = AppRoles.Admin)]
-public class StudentsModel(AppDbContext db) : PageModel
+public class StudentsModel(AppDbContext db, IAuditService auditService) : PageModel
 {
     private readonly AppDbContext _db = db;
+    private readonly IAuditService _auditService = auditService;
 
     public List<Student> Students { get; set; } = [];
     public List<string> Levels { get; set; } = [];
@@ -34,7 +36,7 @@ public class StudentsModel(AppDbContext db) : PageModel
 
     public int TotalPages { get; set; }
     public int TotalCount { get; set; }
-    public const int PageSize = 200;
+    public const int PageSize = 100;
 
     public async Task OnGetAsync()
     {
@@ -110,6 +112,11 @@ public class StudentsModel(AppDbContext db) : PageModel
         student.StudentStatus = status;
 
         await _db.SaveChangesAsync();
+
+        await _auditService.LogAsync(HttpContext, "StudentEdited", "Student",
+            regdNo, true, 200,
+            $"{{\"firstName\":\"{firstName}\",\"lastName\":\"{lastName}\"}}");
+
         TempData["Success"] = "Student updated successfully.";
         await OnGetAsync();
     }

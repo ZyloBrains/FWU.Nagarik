@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FWU.Nagarik.Api.Data.Constants;
 using FWU.Nagarik.Api.ViewModels;
+using FWU.Nagarik.Api.Services;
 
 namespace FWU.Nagarik.Api.Pages.Account;
 
 [Authorize(Roles = AppRoles.Admin)]
-public class UsersModel(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager) : PageModel
+public class UsersModel(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IAuditService auditService) : PageModel
 {
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly IAuditService _auditService = auditService;
 
     public List<UserViewModel> Users { get; set; } = new();
 
@@ -57,6 +59,11 @@ public class UsersModel(UserManager<AppUser> userManager, RoleManager<IdentityRo
         }
 
         TempData["Success"] = "Roles assigned successfully.";
+
+        await _auditService.LogAsync(HttpContext, "UserRoleAssigned", "User",
+            userName, true, 200,
+            $"{{\"roles\":[\"{string.Join("\",\"", roles)}\"]}}");
+
         await OnGetAsync();
     }
 }

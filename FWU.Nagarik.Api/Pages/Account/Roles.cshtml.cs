@@ -2,13 +2,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using FWU.Nagarik.Api.Data.Constants;
+using FWU.Nagarik.Api.Services;
 
 namespace FWU.Nagarik.Api.Pages.Account;
 
 [Authorize(Roles = AppRoles.Admin)]
-public class RolesModel(RoleManager<IdentityRole> roleManager) : PageModel
+public class RolesModel(RoleManager<IdentityRole> roleManager, IAuditService auditService) : PageModel
 {
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly IAuditService _auditService = auditService;
 
     public List<IdentityRole> Roles { get; set; } = new();
 
@@ -29,6 +31,8 @@ public class RolesModel(RoleManager<IdentityRole> roleManager) : PageModel
         var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
         if (result.Succeeded)
         {
+            await _auditService.LogAsync(HttpContext, "RoleCreated", "Role",
+                roleName, true, 200);
             TempData["Success"] = $"Role '{roleName}' created successfully.";
         }
         else
@@ -48,6 +52,10 @@ public class RolesModel(RoleManager<IdentityRole> roleManager) : PageModel
         if (role != null)
         {
             await _roleManager.DeleteAsync(role);
+
+            await _auditService.LogAsync(HttpContext, "RoleDeleted", "Role",
+                name, true, 200);
+
             TempData["Success"] = $"Role '{name}' deleted successfully.";
         }
 

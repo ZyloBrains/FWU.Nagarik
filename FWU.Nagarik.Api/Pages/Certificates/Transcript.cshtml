@@ -1,0 +1,670 @@
+@page
+@{
+    Layout = "_LayoutCertificate";
+    ViewData["Title"] = "Academic Transcript";
+}
+
+<style>
+    .border-inner {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-content {
+        padding: 5px 15px;
+        flex: 1;
+    }
+
+    .header-top {
+        margin-bottom: 8px;
+    }
+
+    .university-name {
+        font-size: 28px;
+        letter-spacing: 2px;
+        margin-bottom: 0;
+    }
+
+    .office-text {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .tagline {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .doc-title {
+        font-size: 20px;
+        letter-spacing: 3px;
+        margin: 12px 0 15px;
+        padding-bottom: 8px;
+    }
+
+    .logo-container {
+        margin: 8px 0;
+    }
+
+    .main-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .student-info-box {
+        padding: 8px 12px;
+        font-size: 10px;
+        margin-bottom: 10px;
+    }
+
+    .info-col {
+        grid-template-columns: 90px auto;
+        gap: 4px;
+    }
+
+    .grades-wrapper {
+        overflow: hidden;
+    }
+
+    .grades-half {
+        font-size: 8px;
+    }
+
+    .semester-header {
+        font-size: 8px;
+    }
+
+    .gpa-label {
+        padding-right: 8px;
+        font-size: 8px;
+    }
+
+    .gpa-val {
+        font-size: 9px;
+    }
+
+    .sig-block {
+        width: 22%;
+    }
+
+    .sig-line {
+        font-size: 10px;
+    }
+
+    .date-val {
+        min-width: 120px;
+    }
+
+    .seal-placeholder {
+        width: 55px;
+        height: 55px;
+        font-size: 6.5px;
+        line-height: 1.2;
+    }
+
+    table {
+        margin-bottom: 8px;
+    }
+
+    th,
+    td {
+        padding: 2px 4px;
+        font-size: 7.5px;
+    }
+
+    .col-code {
+        width: 14%;
+    }
+
+    .col-title {
+        width: 42%;
+    }
+
+    .col-cr,
+    .col-grade,
+    .col-val,
+    .col-point {
+        width: 10%;
+    }
+
+    .hologram-placeholder {
+        right: 25px;
+        top: 55px;
+        width: 50px;
+        height: 50px;
+        font-size: 7px;
+    }
+</style>
+
+
+<div class="header-content">
+    <div class="header-top">
+        <div>Issue Number <span class="serial-no">7298</span></div>
+        <div>
+            <span class="serial-no">014057</span>
+        </div>
+    </div>
+
+    <div class="university-name">Far Western University</div>
+    <div class="office-text">Office of the Controller of Examinations</div>
+    <div class="tagline">Mahendranagar, Kanchanpur, Nepal</div>
+
+    <div class="logo-container">
+        <svg class="main-logo" viewBox="0 0 100 100">
+            <image href="/images/fwu.png" x="2" y="2" width="96" height="96" />
+            <circle cx="50" cy="50" r="49" fill="none" stroke="#1a365d" stroke-width="1" />
+        </svg>
+    </div>
+
+    <div class="doc-title">Academic Transcript</div>
+
+    <div class="hologram-placeholder">HOLOGRAM<br>SEAL</div>
+
+    <div class="student-info-box">
+        <div class="info-col">
+            <div>Name of Student:</div>
+            <div class="val">LOK RAJ OJHA</div>
+            <div>Regd. No.:</div>
+            <div class="val">MG-2021-1-03-5409</div>
+            <div>Faculty:</div>
+            <div class="val">Management</div>
+            <div>Degree:</div>
+            <div class="val">BACHELOR'S DEGREE IN BUSINESS STUDIES</div>
+        </div>
+        <div class="info-col">
+            <div>Course Duration:</div>
+            <div class="val">4 Academic Years (8 Semesters)</div>
+            <div>Campus:</div>
+            <div class="val">DURGALAXMI MULTIPLE CAMPUS<br>ATTARIYA, KAILALI</div>
+        </div>
+    </div>
+
+    <div class="grades-wrapper">
+        <div class="grades-half">
+            <table>
+                <tr>
+                    <th colspan="2">Course Title</th>
+                    <th class="col-cr">Cr.<br>Hrs</th>
+                    <th class="col-grade">Grade</th>
+                    <th class="col-val">Grade<br>Value</th>
+                    <th class="col-point">Grade<br>Point</th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="semester-header">First Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 111</td>
+                    <td class="col-title">Principles of Management*</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 113</td>
+                    <td class="col-title">Business English I**</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 115</td>
+                    <td class="col-title">Financial Accounting I**</td>
+                    <td>3</td>
+                    <td>B-</td>
+                    <td>2.96</td>
+                    <td>8.88</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 117</td>
+                    <td class="col-title">Business Economics I</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 119</td>
+                    <td class="col-title">Business Statistics I*</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>39.00</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.60</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Third Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 231</td>
+                    <td class="col-title">Principles of Marketing*</td>
+                    <td>3</td>
+                    <td>D+</td>
+                    <td>2.16</td>
+                    <td>6.48</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 233</td>
+                    <td class="col-title">Sociology</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 235</td>
+                    <td class="col-title">Fundamentals of Financial<br>Management I</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 237</td>
+                    <td class="col-title">Cost and Management Accounting I</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 239</td>
+                    <td class="col-title">Business Law</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>36.60</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.44</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Fifth Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 351</td>
+                    <td class="col-title">Organizational Behaviour</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 353</td>
+                    <td class="col-title">Quantitative Techniques in Business</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 355</td>
+                    <td class="col-title">Production and Operation<br>Management*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 359</td>
+                    <td class="col-title">Banking and Insurance</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 357</td>
+                    <td class="col-title">Nepalese Studies*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>37.20</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.48</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Seventh Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 471</td>
+                    <td class="col-title">Strategic Management</td>
+                    <td>3</td>
+                    <td>B</td>
+                    <td>3.16</td>
+                    <td>9.48</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 473</td>
+                    <td class="col-title">International Business</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 475</td>
+                    <td class="col-title">Business Policy and Governance</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 477</td>
+                    <td class="col-title">Management elective</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 479</td>
+                    <td class="col-title">Project Work</td>
+                    <td>3</td>
+                    <td>A-</td>
+                    <td>3.76</td>
+                    <td>11.28</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>45.00</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">3.00</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="grades-half">
+            <table>
+                <tr>
+                    <th colspan="2">Course Title</th>
+                    <th class="col-cr">Cr.<br>Hrs</th>
+                    <th class="col-grade">Grade</th>
+                    <th class="col-val">Grade<br>Value</th>
+                    <th class="col-point">Grade<br>Point</th>
+                </tr>
+                <tr>
+                    <th colspan="6" class="semester-header">Second Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 121</td>
+                    <td class="col-title">Business English II</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 123</td>
+                    <td class="col-title">Financial Accounting II*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 125</td>
+                    <td class="col-title">Business Economics II</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 127</td>
+                    <td class="col-title">Human Resource Management</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 129</td>
+                    <td class="col-title">Business Statistics II*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>39.00</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.60</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Fourth Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 241</td>
+                    <td class="col-title">Management Information System**</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 243</td>
+                    <td class="col-title">Psychology*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 245</td>
+                    <td class="col-title">Fundamentals of Financial<br>Management II **</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 247</td>
+                    <td class="col-title">Cost and Management Accounting II*</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 249</td>
+                    <td class="col-title">Entrepreneurship and Small Business</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>36.60</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.44</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Sixth Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 361</td>
+                    <td class="col-title">Business Environment in Nepal*</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 363</td>
+                    <td class="col-title">Fundamentals of Taxation in Nepal</td>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>2.56</td>
+                    <td>7.68</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 365</td>
+                    <td class="col-title">Nepalese Financial System*</td>
+                    <td>3</td>
+                    <td>C-</td>
+                    <td>2.36</td>
+                    <td>7.08</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 367</td>
+                    <td class="col-title">Business Ethics and Corporate<br>Governance*</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 369</td>
+                    <td class="col-title">Business Research Methods*</td>
+                    <td>3</td>
+                    <td>C+</td>
+                    <td>2.76</td>
+                    <td>8.28</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>39.60</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">2.64</td>
+                </tr>
+            </table>
+
+            <table>
+                <tr>
+                    <th colspan="6" class="semester-header">Eighth Semester</th>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 481</td>
+                    <td class="col-title">Management Practical</td>
+                    <td>4</td>
+                    <td>A</td>
+                    <td>4.00</td>
+                    <td>16.00</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 483</td>
+                    <td class="col-title">Summer Internship</td>
+                    <td>4</td>
+                    <td>A-</td>
+                    <td>3.76</td>
+                    <td>15.04</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 485</td>
+                    <td class="col-title">Dissertation</td>
+                    <td>6</td>
+                    <td>A</td>
+                    <td>4.00</td>
+                    <td>24.00</td>
+                </tr>
+                <tr>
+                    <td class="col-code">MGT 487</td>
+                    <td class="col-title">Comprehensive Viva</td>
+                    <td>1</td>
+                    <td>A-</td>
+                    <td>3.76</td>
+                    <td>3.76</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2" class="total-label">Total</td>
+                    <td>15</td>
+                    <td></td>
+                    <td></td>
+                    <td>58.80</td>
+                </tr>
+                <tr class="gpa-row">
+                    <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                    <td class="gpa-val">3.92</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="sig-row">
+            <div class="sig-block">
+                <div class="sig-line">Prepared by</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line">Checked by</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line">Record Section</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line">Controller of Examinations</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>DATE OF ISSUE: <span class="date-val">January 21, 2026</span></div>
+        </div>
+    </div>
+</div>

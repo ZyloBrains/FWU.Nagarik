@@ -1,3 +1,4 @@
+using FWU.Nagarik.Api.Mappers;
 using FWU.Nagarik.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -88,38 +89,22 @@ public class StudentService(Data.AppDbContext dbContext) : IStudentService
         if (student == null)
             return null;
 
-        var marks = await _dbContext.StudentMarks
-            .Where(m => m.RegdNo == registrationNumber)
-            .OrderBy(m => m.AcademicYear)
-            .ThenBy(m => m.Semester)
-            .ToListAsync();
+        var transcript = await _dbContext.Transcripts
+            .Include(t => t.Institution)
+            .Include(t => t.Semesters)
+                .ThenInclude(s => s.Subjects)
+            .FirstOrDefaultAsync(t => t.RegdNo == registrationNumber);
 
-        var subjectMarks = marks.Select(m => new SubjectMark
-        {
-            SubjectName = m.SubjectName,
-            SubjectCode = m.SubjectCode,
-            Marks = m.Marks,
-            Grade = m.Grade,
-            Semester = m.Semester,
-            AcademicYear = m.AcademicYear
-        }).ToList();
+        if (transcript == null)
+            return null;
 
-        var transcriptData = new TranscriptData
-        {
-            RegdNo = student.RegdNo,
-            FirstName = student.FirstName,
-            MiddleName = student.MiddleName ?? string.Empty,
-            LastName = student.LastName,
-            ProgramName = student.ProgramName,
-            IntakeYear = student.IntakeYear,
-            Marks = subjectMarks
-        };
+        var transcriptViewModel = TranscriptMapper.ToViewModel(transcript, student);
 
         return new TranscriptResponse
         {
             Data = registrationNumber,
             Message = "Success",
-            OtherData = [transcriptData]
+            Transcript = transcriptViewModel
         };
     }
 }
