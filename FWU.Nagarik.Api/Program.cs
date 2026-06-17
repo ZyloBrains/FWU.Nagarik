@@ -6,6 +6,7 @@ using System.Text;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Endpoints;
+using FWU.Nagarik.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -91,6 +92,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRequestSyncService, StudentRequestSyncService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 var app = builder.Build();
 
@@ -115,6 +117,7 @@ app.UseSwaggerUI(options =>
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AuditMiddleware>();
 app.UseStaticFiles();
 
 app.MapRazorPages();

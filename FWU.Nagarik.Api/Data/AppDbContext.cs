@@ -18,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Transcript> Transcripts { get; set; }
     public DbSet<Semester> Semesters { get; set; }
     public DbSet<Subject> Subjects { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -91,7 +92,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.RegdNo).IsRequired();
-            entity.HasIndex(e => e.RegdNo).IsUnique();
         });
 
         modelBuilder.Entity<Transcript>(entity =>
@@ -100,10 +100,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.Property(e => e.RegdNo).IsRequired();
             entity.HasIndex(e => e.RegdNo);
             entity.HasIndex(e => e.IssueSerialNo).IsUnique();
-            entity.HasOne(e => e.Student)
-                  .WithMany()
-                  .HasForeignKey(e => e.RegdNo)
-                  .HasPrincipalKey(s => s.RegdNo);
             entity.HasOne(e => e.Institution)
                   .WithMany()
                   .HasForeignKey(e => e.InstitutionId);
@@ -125,6 +121,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
                   .WithMany(s => s.Subjects)
                   .HasForeignKey(e => e.SemesterId)
                   .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Timestamp);
+            entity.HasIndex(e => new { e.ClientKeyId, e.Timestamp });
+            entity.HasIndex(e => new { e.Action, e.Timestamp });
         });
     }
 }

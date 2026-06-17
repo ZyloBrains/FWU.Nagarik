@@ -21,9 +21,6 @@ public class Transcript
 
     public int? InstitutionId { get; set; }
 
-    [ForeignKey(nameof(RegdNo))]
-    public virtual Student? Student { get; set; }
-
     [ForeignKey(nameof(InstitutionId))]
     public virtual Institution? Institution { get; set; }
 
