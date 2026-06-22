@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Endpoints;
+using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,28 +25,13 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
 builder.Services.AddRazorPages();
 
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "YourSuperSecretKeyHere12345!";
-var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "FWU.Nagarik.Api";
-var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "FWU.Nagarik.Api";
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
 })
-.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtIssuer,
-        ValidAudience = jwtAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-    };
-});
+.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+    ApiKeyAuthenticationOptions.DefaultScheme, options => { });
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -70,20 +53,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "FWU Nagarik API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new()
+    c.AddSecurityDefinition("ApiKey", new()
     {
-        Description = "JWT Authorization header using the Bearer scheme.",
-        Name = "Authorization",
+        Description = "API Key authentication using the X-Api-Key header.",
+        Name = "X-Api-Key",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
+        Scheme = "ApiKey"
     });
     c.AddSecurityRequirement(new()
     {
         {
             new()
             {
-                Reference = new() { Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, Id = "Bearer" }
+                Reference = new() { Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, Id = "ApiKey" }
             },
             Array.Empty<string>()
         }
