@@ -10,15 +10,13 @@ public class AuditMiddleware(RequestDelegate next)
     private static readonly Dictionary<string, string> ActionMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["/api/student/verify"] = "StudentVerified",
-        ["/api/student/transcript"] = "TranscriptRetrieved",
-        ["/api/auth/token"] = "TokenGenerated"
+        ["/api/student/transcript"] = "TranscriptRetrieved"
     };
 
     private static readonly Dictionary<string, string> EntityTypeMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["/api/student/verify"] = "Student",
-        ["/api/student/transcript"] = "Student",
-        ["/api/auth/token"] = "Token"
+        ["/api/student/transcript"] = "Student"
     };
 
     public async Task InvokeAsync(HttpContext context)
@@ -45,23 +43,12 @@ public class AuditMiddleware(RequestDelegate next)
             entityId = context.Request.Query["registration_number"].FirstOrDefault();
         }
 
-        string? details = null;
-        if (path.Equals("/api/auth/token", StringComparison.OrdinalIgnoreCase))
-        {
-            var apiKey = context.Request.Query["apiKey"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(apiKey))
-            {
-                details = $"{{\"apiKey\":\"{apiKey[..Math.Min(8, apiKey.Length)]}***\"}}";
-            }
-        }
-
         await auditService.LogAsync(
             context,
             action,
             EntityTypeMap.TryGetValue(path, out var entityType) ? entityType : "Api",
             entityId,
             isSuccess,
-            responseCode,
-            details);
+            responseCode);
     }
 }
