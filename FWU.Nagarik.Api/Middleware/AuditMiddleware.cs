@@ -10,13 +10,15 @@ public class AuditMiddleware(RequestDelegate next)
     private static readonly Dictionary<string, string> ActionMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["/api/student/verify"] = "StudentVerified",
-        ["/api/student/transcript"] = "TranscriptRetrieved"
+        ["/api/student/transcript"] = "TranscriptRetrieved",
+        ["/api/student/certificate"] = "CertificateRetrieved"
     };
 
     private static readonly Dictionary<string, string> EntityTypeMap = new(StringComparer.OrdinalIgnoreCase)
     {
         ["/api/student/verify"] = "Student",
-        ["/api/student/transcript"] = "Student"
+        ["/api/student/transcript"] = "Student",
+        ["/api/student/certificate"] = "Certificate"
     };
 
     public async Task InvokeAsync(HttpContext context)
@@ -38,7 +40,8 @@ public class AuditMiddleware(RequestDelegate next)
 
         string? entityId = null;
         if (path.Equals("/api/student/verify", StringComparison.OrdinalIgnoreCase) ||
-            path.Equals("/api/student/transcript", StringComparison.OrdinalIgnoreCase))
+            path.Equals("/api/student/transcript", StringComparison.OrdinalIgnoreCase) ||
+            path.Equals("/api/student/certificate", StringComparison.OrdinalIgnoreCase))
         {
             entityId = context.Request.Query["registration_number"].FirstOrDefault();
         }
