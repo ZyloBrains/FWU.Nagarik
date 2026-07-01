@@ -83,8 +83,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRequestSyncService, StudentRequestSyncService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
-builder.Services.AddScoped<IAzureBlobStorageService, AzureBlobStorageService>();
-builder.Services.AddScoped<ICertificateService, CertificateService>();
+builder.Services.AddScoped<ICsvTranscriptImportService, CsvTranscriptImportService>();
 
 var app = builder.Build();
 

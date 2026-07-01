@@ -19,7 +19,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<Semester> Semesters { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
-    public DbSet<Certificate> Certificates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -130,17 +129,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.HasIndex(e => e.Timestamp);
             entity.HasIndex(e => new { e.ClientKeyId, e.Timestamp });
             entity.HasIndex(e => new { e.Action, e.Timestamp });
-        });
-
-        modelBuilder.Entity<Certificate>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.RegdNo).IsRequired();
-            entity.Property(e => e.ProgramName).IsRequired();
-            entity.Property(e => e.CertificateType).IsRequired();
-            entity.Property(e => e.BlobName).IsRequired();
-            entity.HasIndex(e => e.RegdNo);
-            entity.HasIndex(e => new { e.RegdNo, e.ProgramName, e.CertificateType }).IsUnique();
         });
     }
 }

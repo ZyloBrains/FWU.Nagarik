@@ -32,6 +32,7 @@ public static class TranscriptMapper
             Name = semester.Name,
             SemesterNumber = semester.SemesterNumber,
             AcademicYear = semester.AcademicYear,
+            ExamRollNo = semester.ExamRollNo,
             SortOrder = semester.SortOrder,
             TotalCreditHours = totalCreditHours,
             TotalGradePoints = totalGradePoints,

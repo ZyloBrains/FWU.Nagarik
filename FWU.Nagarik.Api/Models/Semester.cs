@@ -21,6 +21,9 @@ public class Semester
     [MaxLength(50)]
     public string? AcademicYear { get; set; }
 
+    [MaxLength(50)]
+    public string? ExamRollNo { get; set; }
+
     public int SortOrder { get; set; }
 
     [ForeignKey(nameof(TranscriptId))]
