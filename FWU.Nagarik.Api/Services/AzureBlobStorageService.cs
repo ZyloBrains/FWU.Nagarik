@@ -32,9 +32,10 @@ public class AzureBlobStorageService : IAzureBlobStorageService
         }
         else
         {
-            var connectionString = configuration["AzureStorage:ConnectionString"];
+            var connectionString = configuration["BlobStorageConnectionString"]
+                ?? configuration["AzureStorage:ConnectionString"];
             if (string.IsNullOrWhiteSpace(connectionString))
-                throw new InvalidOperationException("AzureStorage:ConnectionString is not configured.");
+                throw new InvalidOperationException("BlobStorageConnectionString is not configured. Set it in Azure Key Vault or AzureStorage:ConnectionString.");
             _blobServiceClient = new BlobServiceClient(connectionString);
         }
     }

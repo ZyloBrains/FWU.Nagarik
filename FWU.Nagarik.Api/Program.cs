@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Azure.Identity;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Endpoints;
@@ -7,6 +8,12 @@ using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultUri = builder.Configuration["KeyVault:VaultUri"];
+if (!string.IsNullOrEmpty(keyVaultUri))
+{
+    builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+}
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
