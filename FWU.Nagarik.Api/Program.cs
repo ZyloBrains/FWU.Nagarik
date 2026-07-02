@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Azure.Identity;
+using Flavor;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Endpoints;
@@ -84,6 +85,8 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRequestSyncService, StudentRequestSyncService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<ICsvTranscriptImportService, CsvTranscriptImportService>();
+builder.Services.AddScoped<IRazorViewRenderer, RazorViewRenderer>();
+builder.Services.AddSingleton<IFlavorConverter, FlavorConverter>();
 
 var app = builder.Build();
 

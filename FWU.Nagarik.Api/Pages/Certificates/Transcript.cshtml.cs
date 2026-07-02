@@ -7,7 +7,11 @@ namespace FWU.Nagarik.Api.Pages.Certificates;
 
 public class TranscriptModel : PageModel
 {
-    private readonly IStudentService _studentService;
+    private readonly IStudentService? _studentService;
+
+    public TranscriptModel()
+    {
+    }
 
     public TranscriptModel(IStudentService studentService)
     {
@@ -27,7 +31,7 @@ public class TranscriptModel : PageModel
         if (string.IsNullOrWhiteSpace(RegdNo) || string.IsNullOrWhiteSpace(DobAD))
             return Page();
 
-        var response = await _studentService.GetTranscriptAsync(RegdNo, DobAD);
+        var response = await _studentService!.GetTranscriptAsync(RegdNo, DobAD);
         if (response?.Transcript == null)
             return Page();
 
