@@ -3,7 +3,6 @@ using PuppeteerSharp;
 using PuppeteerSharp.Media;
 using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Services;
-using FWU.Nagarik.Api.Pages.Certificates;
 
 namespace FWU.Nagarik.Api.Endpoints;
 public static class ApiEndpoints
@@ -61,8 +60,8 @@ public static class ApiEndpoints
                 return Results.NotFound(new { message = "No record found for the given registration number / DOB" });
 
             var htmlContent = await viewRenderer.RenderViewToStringAsync(
-                "/Pages/Certificates/Transcript.cshtml",
-                new TranscriptModel(studentService) { TranscriptData = result.Transcript },
+                "/Pages/Certificates/_TranscriptContent.cshtml",
+                result.Transcript,
                 httpContext);
 
             var cssPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "common.css");
