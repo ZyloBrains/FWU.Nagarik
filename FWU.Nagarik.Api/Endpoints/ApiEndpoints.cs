@@ -75,7 +75,11 @@ public static class ApiEndpoints
                     <style>{cssContent}</style>
                 </head>
                 <body>
-                    {htmlContent}
+                    <div class="certificate">
+                        <div class="border-outer"></div>
+                        <div class="border-inner"></div>
+                        {htmlContent}
+                    </div>
                 </body>
                 </html>
                 """;

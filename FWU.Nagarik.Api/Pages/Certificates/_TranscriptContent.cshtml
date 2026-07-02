@@ -1,5 +1,6 @@
 @model FWU.Nagarik.Api.ViewModels.TranscriptViewModel
 @{
+    Layout = null;
     var data = Model;
     var leftSemesters = data?.Semesters?.Where(s => s.SemesterNumber % 2 == 1).ToList() ?? new();
     var rightSemesters = data?.Semesters?.Where(s => s.SemesterNumber % 2 == 0).ToList() ?? new();
