@@ -62,7 +62,7 @@ public static class ApiEndpoints
 
             var htmlContent = await viewRenderer.RenderViewToStringAsync(
                 "/Pages/Certificates/Transcript.cshtml",
-                new TranscriptModel { TranscriptData = result.Transcript },
+                new TranscriptModel(studentService) { TranscriptData = result.Transcript },
                 httpContext);
 
             var cssPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "common.css");

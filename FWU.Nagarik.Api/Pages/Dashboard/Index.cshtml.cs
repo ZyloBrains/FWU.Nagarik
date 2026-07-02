@@ -15,6 +15,7 @@ public class IndexModel(AppDbContext db, UserManager<AppUser> userManager) : Pag
     private readonly UserManager<AppUser> _userManager = userManager;
 
     public int TotalStudents { get; set; }
+    public int TotalTranscripts { get; set; }
     public int TotalVerifications { get; set; }
     public int TotalKeys { get; set; }
     public int TotalStudentRequests { get; set; }
@@ -23,6 +24,7 @@ public class IndexModel(AppDbContext db, UserManager<AppUser> userManager) : Pag
     public async Task OnGetAsync()
     {
         TotalStudents = await _db.Students.AsNoTracking().CountAsync();
+        TotalTranscripts = await _db.Transcripts.AsNoTracking().Select(t => t.RegdNo).Distinct().CountAsync();
         TotalVerifications = await _db.VerificationLogs.AsNoTracking().CountAsync();
         TotalKeys = await _db.ApiKeys.AsNoTracking().CountAsync();
         TotalStudentRequests = await _db.StudentRequests.AsNoTracking().CountAsync();

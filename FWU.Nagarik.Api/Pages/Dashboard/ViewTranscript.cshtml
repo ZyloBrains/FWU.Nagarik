@@ -1,0 +1,51 @@
+@page
+@model FWU.Nagarik.Api.Pages.Dashboard.ViewTranscriptModel
+@{
+    ViewData["Title"] = "View Transcript";
+}
+
+<h2><i class="bi bi-eye"></i> View Student Transcript</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show">
+        @TempData["Warning"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Search by Registration Number</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Registration Number <span class="text-danger">*</span></label>
+                        <input type="text" name="RegdNo" class="form-control" placeholder="e.g. MG-2013-1-1-213"
+                               value="@Model.RegdNo" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> View Transcript
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

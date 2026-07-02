@@ -5,18 +5,9 @@ using FWU.Nagarik.Api.ViewModels;
 
 namespace FWU.Nagarik.Api.Pages.Certificates;
 
-public class TranscriptModel : PageModel
+public class TranscriptModel(IStudentService studentService) : PageModel
 {
-    private readonly IStudentService? _studentService;
-
-    public TranscriptModel()
-    {
-    }
-
-    public TranscriptModel(IStudentService studentService)
-    {
-        _studentService = studentService;
-    }
+    private readonly IStudentService _studentService = studentService;
 
     public TranscriptViewModel? TranscriptData { get; set; }
 
@@ -28,10 +19,13 @@ public class TranscriptModel : PageModel
 
     public async Task<IActionResult> OnGetAsync()
     {
+        if (TranscriptData != null)
+            return Page();
+
         if (string.IsNullOrWhiteSpace(RegdNo) || string.IsNullOrWhiteSpace(DobAD))
             return Page();
 
-        var response = await _studentService!.GetTranscriptAsync(RegdNo, DobAD);
+        var response = await _studentService.GetTranscriptAsync(RegdNo, DobAD);
         if (response?.Transcript == null)
             return Page();
 

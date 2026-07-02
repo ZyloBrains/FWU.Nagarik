@@ -1,0 +1,134 @@
+@page
+@model FWU.Nagarik.Api.Pages.Dashboard.TranscriptsModel
+@{
+    ViewData["Title"] = "Transcripts";
+}
+<style>
+    .table-sm td, .table-sm th { font-size: 0.85rem; padding: 0.25rem; }
+    .table-sm td { vertical-align: middle; }
+</style>
+
+<h2><i class="bi bi-journal-richtext"></i> Student Transcripts</h2>
+
+<form method="get" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-2">
+            <input type="text" name="searchRegdNo" class="form-control" placeholder="Regd. No." value="@Model.SearchRegdNo">
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="searchName" class="form-control" placeholder="Student Name" value="@Model.SearchName">
+        </div>
+        <div class="col-md-3">
+            <select name="programName" class="form-select">
+                <option value="">-- Select Program --</option>
+                @foreach (var program in Model.Programs)
+                {
+                    <option value="@program" selected="@(Model.ProgramName == program)">@program</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="faculty" class="form-select">
+                <option value="">-- Select Faculty --</option>
+                @foreach (var faculty in Model.Faculties)
+                {
+                    <option value="@faculty" selected="@(Model.Faculty == faculty)">@faculty</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <div class="d-flex justify-content-between gap-2">
+                <button type="submit" class="btn btn-primary w-100" title="Filter">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+                <a asp-page="./Transcripts" class="btn btn-secondary w-100" title="Clear">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Regd. No.</th>
+                    <th>Student Name</th>
+                    <th>Program</th>
+                    <th>Faculty</th>
+                    <th>Issue No.</th>
+                    <th>Semesters</th>
+                    <th>Subjects</th>
+                    <th>CGPA</th>
+                    <th>Issue Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model.TranscriptEntries)
+                {
+                    <tr>
+                        <td>@entry.RegdNo</td>
+                        <td>@entry.StudentName</td>
+                        <td>@entry.ProgramName</td>
+                        <td>@entry.FacultyName</td>
+                        <td>@entry.IssueSerialNo</td>
+                        <td>@entry.SemesterCount</td>
+                        <td>@entry.SubjectCount</td>
+                        <td>@entry.CGPA?.ToString("F2")</td>
+                        <td>@entry.IssueDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <a asp-page="/Dashboard/ViewTranscript" asp-route-regdNo="@entry.RegdNo"
+                               class="btn btn-outline-primary btn-sm" title="View Certificate">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.TranscriptEntries.Any())
+        {
+            <p class="text-center text-muted py-4">No transcripts found</p>
+        }
+    </div>
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Transcripts" asp-route-page="1" asp-route-searchRegdNo="@Model.SearchRegdNo" asp-route-searchName="@Model.SearchName" asp-route-programName="@Model.ProgramName" asp-route-faculty="@Model.Faculty">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Transcripts" asp-route-page="@(Model.CurrentPage - 1)" asp-route-searchRegdNo="@Model.SearchRegdNo" asp-route-searchName="@Model.SearchName" asp-route-programName="@Model.ProgramName" asp-route-faculty="@Model.Faculty">Previous</a>
+                </li>
+            }
+
+            @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./Transcripts" asp-route-page="@i" asp-route-searchRegdNo="@Model.SearchRegdNo" asp-route-searchName="@Model.SearchName" asp-route-programName="@Model.ProgramName" asp-route-faculty="@Model.Faculty">@i</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Transcripts" asp-route-page="@(Model.CurrentPage + 1)" asp-route-searchRegdNo="@Model.SearchRegdNo" asp-route-searchName="@Model.SearchName" asp-route-programName="@Model.ProgramName" asp-route-faculty="@Model.Faculty">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-page="./Transcripts" asp-route-page="@Model.TotalPages" asp-route-searchRegdNo="@Model.SearchRegdNo" asp-route-searchName="@Model.SearchName" asp-route-programName="@Model.ProgramName" asp-route-faculty="@Model.Faculty">Last</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+<p class="text-center text-muted">Showing @Model.TranscriptEntries.Count of @Model.TotalCount transcripts</p>
