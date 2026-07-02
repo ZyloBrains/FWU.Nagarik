@@ -80,10 +80,10 @@
                         <td>@entry.CGPA?.ToString("F2")</td>
                         <td>@entry.IssueDate.ToString("yyyy-MM-dd")</td>
                         <td>
-                            <a asp-page="/Dashboard/ViewTranscript" asp-route-regdNo="@entry.RegdNo"
-                               class="btn btn-outline-primary btn-sm" title="View Certificate">
+                            <button type="button" class="btn btn-outline-primary btn-sm" title="View Transcript"
+                                    onclick="openTranscript('@entry.RegdNo')">
                                 <i class="bi bi-eye"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 }
@@ -132,3 +132,51 @@
 }
 
 <p class="text-center text-muted">Showing @Model.TranscriptEntries.Count of @Model.TotalCount transcripts</p>
+
+<div id="transcriptModal" style="display:none; position:fixed; inset:0; z-index:1050; background:rgba(0,0,0,0.7); overflow-y:auto;">
+    <div style="position:relative; width:850px; margin:30px auto; background:#fff; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
+        <button type="button" onclick="closeTranscriptModal()"
+                style="position:absolute; top:10px; right:15px; z-index:1060; background:none; border:none; font-size:24px; cursor:pointer; color:#666;">&times;</button>
+        <div id="transcriptModalBody" style="padding:0;">
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Loading transcript...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openTranscript(regdNo) {
+            var modal = document.getElementById('transcriptModal');
+            var body = document.getElementById('transcriptModalBody');
+            modal.style.display = 'block';
+            body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Loading transcript...</p></div>';
+
+            fetch('/api/admin/transcript/html?regdNo=' + encodeURIComponent(regdNo))
+                .then(function (response) {
+                    if (!response.ok) throw new Error('Failed to load transcript');
+                    return response.text();
+                })
+                .then(function (html) {
+                    body.innerHTML = html;
+                })
+                .catch(function (err) {
+                    body.innerHTML = '<p class="text-danger text-center py-5">' + err.message + '</p>';
+                });
+        }
+
+        function closeTranscriptModal() {
+            document.getElementById('transcriptModal').style.display = 'none';
+        }
+
+        document.getElementById('transcriptModal').addEventListener('click', function (e) {
+            if (e.target === this) closeTranscriptModal();
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeTranscriptModal();
+        });
+    </script>
+}
