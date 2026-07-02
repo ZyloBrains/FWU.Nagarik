@@ -56,7 +56,7 @@ public static class TranscriptMapper
 
         var totalAllCreditHours = semesterGroups.Sum(s => s.TotalCreditHours);
         var totalAllGradePoints = semesterGroups.Sum(s => s.TotalGradePoints);
-        var cgpa = totalAllCreditHours > 0 ? Math.Round(totalAllGradePoints / totalAllCreditHours, 2) : 0;
+        var cgpa = first.CGPA ?? 0;
 
         return new TranscriptViewModel
         {
