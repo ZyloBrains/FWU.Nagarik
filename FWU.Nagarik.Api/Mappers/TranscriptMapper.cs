@@ -5,65 +5,68 @@ namespace FWU.Nagarik.Api.Mappers;
 
 public static class TranscriptMapper
 {
-    public static SubjectViewModel ToViewModel(Subject subject)
-    {
-        return new SubjectViewModel
-        {
-            SubjectName = subject.SubjectName,
-            SubjectCode = subject.SubjectCode,
-            CreditHours = subject.CreditHours,
-            Grade = subject.Grade,
-            GradeValue = subject.GradeValue,
-            GradePoint = subject.GradePoint,
-            CourseType = subject.CourseType,
-            SortOrder = subject.SortOrder
-        };
-    }
+    private const string UniversityName = "Far Western University";
+    private const string OfficeName = "Office of the Controller of Examinations";
+    private const string UniversityLocation = "Mahendranagar, Kanchanpur, Nepal";
+    private const string DocumentTitle = "Academic Transcript";
 
-    public static SemesterViewModel ToViewModel(Semester semester)
+    public static TranscriptViewModel ToViewModel(List<Transcript> transcripts, Student student)
     {
-        var subjects = semester.Subjects.Select(ToViewModel).ToList();
-        var totalCreditHours = subjects.Sum(s => s.CreditHours);
-        var totalGradePoints = subjects.Sum(s => s.GradePoint);
-        var gpa = totalCreditHours > 0 ? Math.Round(totalGradePoints / totalCreditHours, 2) : 0;
+        if (transcripts.Count == 0)
+            return new TranscriptViewModel();
 
-        return new SemesterViewModel
-        {
-            Name = semester.Name,
-            SemesterNumber = semester.SemesterNumber,
-            AcademicYear = semester.AcademicYear,
-            ExamRollNo = semester.ExamRollNo,
-            SortOrder = semester.SortOrder,
-            TotalCreditHours = totalCreditHours,
-            TotalGradePoints = totalGradePoints,
-            Gpa = gpa,
-            TotalGradeValue = subjects.Sum(s => s.GradeValue),
-            Subjects = subjects
-        };
-    }
+        var first = transcripts.First();
 
-    public static TranscriptViewModel ToViewModel(Transcript transcript, Student student)
-    {
-        var semesters = transcript.Semesters
-            .OrderBy(s => s.SortOrder)
-            .Select(ToViewModel)
+        var semesterGroups = transcripts
+            .GroupBy(t => t.SemesterNumber)
+            .OrderBy(g => g.Key)
+            .Select(g =>
+            {
+                var subjects = g.OrderBy(t => t.SortOrder).Select(t => new SubjectViewModel
+                {
+                    SubjectName = t.SubjectName,
+                    SubjectCode = t.SubjectCode,
+                    CreditHours = t.CreditHours,
+                    Grade = t.Grade,
+                    GradeValue = t.GradeValue,
+                    GradePoint = t.GradePoint,
+                    CourseType = t.CourseType,
+                    SortOrder = t.SortOrder
+                }).ToList();
+
+                var totalCreditHours = subjects.Sum(s => s.CreditHours);
+                var totalGradePoints = subjects.Sum(s => s.GradePoint);
+                var gpa = totalCreditHours > 0 ? Math.Round(totalGradePoints / totalCreditHours, 2) : 0;
+
+                return new SemesterViewModel
+                {
+                    Name = g.First().SemesterName,
+                    SemesterNumber = g.Key,
+                    AcademicYear = g.First().AcademicYearName,
+                    ExamRollNo = g.First().ExamRollNo,
+                    SortOrder = g.Key,
+                    TotalCreditHours = totalCreditHours,
+                    TotalGradePoints = totalGradePoints,
+                    Gpa = gpa,
+                    TotalGradeValue = subjects.Sum(s => s.GradeValue),
+                    Subjects = subjects
+                };
+            })
             .ToList();
 
-        var totalCreditHours = semesters.Sum(s => s.TotalCreditHours);
-        var totalGradePoints = semesters.Sum(s => s.TotalGradePoints);
-        var cgpa = totalCreditHours > 0 ? Math.Round(totalGradePoints / totalCreditHours, 2) : 0;
-
-        var config = transcript.Institution;
+        var totalAllCreditHours = semesterGroups.Sum(s => s.TotalCreditHours);
+        var totalAllGradePoints = semesterGroups.Sum(s => s.TotalGradePoints);
+        var cgpa = totalAllCreditHours > 0 ? Math.Round(totalAllGradePoints / totalAllCreditHours, 2) : 0;
 
         return new TranscriptViewModel
         {
-            IssueSerialNo = transcript.IssueSerialNo,
-            IssueDate = transcript.IssueDate.ToString("MMMM dd, yyyy"),
-            UniversityName = config?.Name ?? "Far Western University",
-            OfficeName = config?.OfficeName ?? "Office of the Controller of Examinations",
-            UniversityLocation = config?.Location ?? "Mahendranagar, Kanchanpur, Nepal",
-            LogoPath = config?.LogoPath,
-            DocumentTitle = config?.DocumentTitle ?? "Academic Transcript",
+            IssueSerialNo = first.IssueSerialNo,
+            IssueDate = first.IssueDate.ToString("MMMM dd, yyyy"),
+            UniversityName = UniversityName,
+            OfficeName = OfficeName,
+            UniversityLocation = UniversityLocation,
+            LogoPath = null,
+            DocumentTitle = DocumentTitle,
             StudentName = $"{student.FirstName} {student.MiddleName} {student.LastName}".Trim(),
             RegdNo = student.RegdNo,
             Faculty = student.Faculty,
@@ -71,11 +74,11 @@ public static class TranscriptMapper
             CourseDuration = student.CourseDuration,
             CampusName = student.CampusName,
             CampusLocation = student.CampusLocation,
-            TotalCreditHours = totalCreditHours,
-            TotalGradePoints = totalGradePoints,
+            TotalCreditHours = totalAllCreditHours,
+            TotalGradePoints = totalAllGradePoints,
             Cgpa = cgpa,
-            TotalSubjects = semesters.Sum(s => s.Subjects.Count),
-            Semesters = semesters
+            TotalSubjects = semesterGroups.Sum(s => s.Subjects.Count),
+            Semesters = semesterGroups
         };
     }
 }

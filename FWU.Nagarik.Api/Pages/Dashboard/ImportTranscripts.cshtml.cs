@@ -42,10 +42,10 @@ public class ImportTranscriptsModel(ICsvTranscriptImportService importService, I
 
         await _auditService.LogAsync(HttpContext, "TranscriptsImported", "Transcript",
             CsvFile.FileName, true, 200,
-            $"{{\"studentsCreated\":{Result.StudentsCreated},\"studentsUpdated\":{Result.StudentsUpdated},\"transcriptsCreated\":{Result.TranscriptsCreated},\"subjectsCreated\":{Result.SubjectsCreated}}}");
+            $"{{\"studentsCreated\":{Result.StudentsCreated},\"studentsUpdated\":{Result.StudentsUpdated},\"transcriptsCreated\":{Result.TranscriptsCreated},\"transcriptsUpdated\":{Result.TranscriptsUpdated},\"rowsSkipped\":{Result.RowsSkipped}}}");
 
         if (Result.Errors.Any())
-            TempData["Warning"] = $"Import completed with {Result.Errors.Count} error(s).";
+            TempData["Warning"] = $"Import completed with {Result.Errors.Count} error(s) and {Result.RowsSkipped} row(s) skipped.";
         else
             TempData["Success"] = "Transcripts imported successfully.";
 

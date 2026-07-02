@@ -9,8 +9,6 @@
   <ItemGroup>
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.1" />
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
-    <PackageReference Include="Flavor" Version="1.0.3" />
-    <PackageReference Include="Flavor.AspNetCore" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0" />
@@ -19,6 +17,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="PuppeteerSharp" Version="20.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 

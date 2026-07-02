@@ -82,21 +82,29 @@
                         <div class="col-md-3">
                             <div class="card text-center border-secondary">
                                 <div class="card-body">
-                                    <div class="text-secondary display-6">@Model.Result.SubjectsCreated</div>
-                                    <div class="text-muted">Subjects</div>
+                                    <div class="text-secondary display-6">@Model.Result.TranscriptsUpdated</div>
+                                    <div class="text-muted">Transcripts Updated</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    @if (Model.Result.RowsSkipped > 0)
+                    {
+                        <div class="alert alert-warning mt-3 mb-0">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>@Model.Result.RowsSkipped</strong> row(s) skipped due to validation errors. See details below.
+                        </div>
+                    }
+
                     @if (Model.Result.Errors.Any())
                     {
                         <hr>
-                        <h6 class="text-danger">Errors:</h6>
-                        <ul class="list-group list-group-flush">
+                        <h6 class="text-danger">Errors (@Model.Result.Errors.Count):</h6>
+                        <ul class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
                             @foreach (var error in Model.Result.Errors)
                             {
-                                <li class="list-group-item text-danger">@error</li>
+                                <li class="list-group-item text-danger" style="font-size: 0.85rem;">@error</li>
                             }
                         </ul>
                     }

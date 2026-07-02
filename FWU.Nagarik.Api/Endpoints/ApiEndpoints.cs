@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
-using Flavor;
-using Flavor.Options;
+using PuppeteerSharp;
+using PuppeteerSharp.Media;
 using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Pages.Certificates;
@@ -8,6 +8,19 @@ using FWU.Nagarik.Api.Pages.Certificates;
 namespace FWU.Nagarik.Api.Endpoints;
 public static class ApiEndpoints
 {
+    private static IBrowser? _browser;
+
+    private static async Task<IBrowser> GetBrowserAsync()
+    {
+        if (_browser == null || _browser.IsClosed)
+        {
+            var browserFetcher = new BrowserFetcher();
+            await browserFetcher.DownloadAsync();
+            _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+        }
+        return _browser;
+    }
+
     public static void Map(WebApplication app)
     {
         app.MapGet("/api/student/verify", [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
@@ -34,7 +47,6 @@ public static class ApiEndpoints
             string dobAD,
             IStudentService studentService,
             IRazorViewRenderer viewRenderer,
-            IFlavorConverter flavorConverter,
             HttpContext httpContext) =>
         {
             if (string.IsNullOrWhiteSpace(registration_number))
@@ -69,12 +81,22 @@ public static class ApiEndpoints
                 </html>
                 """;
 
-            var pdfDocument = await flavorConverter.ConvertHtmlAsync(fullHtml, o => o
-                .WithPageSize(PageSize.A4)
-                .WithMargins(new Margins(0.4, 0.4, 0.4, 0.4))
-                .WithBackground());
-
-            var pdfBytes = pdfDocument.ToBytes();
+            var browser = await GetBrowserAsync();
+            using var page = await browser.NewPageAsync();
+            await page.SetContentAsync(fullHtml);
+            var pdfBytes = await page.PdfDataAsync(new PdfOptions
+            {
+                Width = "210mm",
+                Height = "297mm",
+                MarginOptions = new MarginOptions
+                {
+                    Top = "0.4in",
+                    Right = "0.4in",
+                    Bottom = "0.4in",
+                    Left = "0.4in"
+                },
+                PrintBackground = true
+            });
 
             return Results.File(pdfBytes, "application/pdf", $"{registration_number}_Transcript.pdf");
         })
