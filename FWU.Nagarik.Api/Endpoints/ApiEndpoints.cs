@@ -23,6 +23,17 @@ public static class ApiEndpoints
         return _browser;
     }
 
+    private static string GetLogoBase64()
+    {
+        var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "fwu.png");
+        if (!File.Exists(logoPath))
+            return string.Empty;
+
+        var bytes = File.ReadAllBytes(logoPath);
+        var base64 = Convert.ToBase64String(bytes);
+        return $"data:image/png;base64,{base64}";
+    }
+
     public static void Map(WebApplication app)
     {
         app.MapGet("/api/student/verify", [Authorize(AuthenticationSchemes = ApiKeyAuthenticationOptions.DefaultScheme)] async (string registration_number, string dobAD, IStudentService studentService) =>
@@ -69,6 +80,9 @@ public static class ApiEndpoints
 
             var cssPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "css", "common.css");
             var cssContent = File.Exists(cssPath) ? await File.ReadAllTextAsync(cssPath) : string.Empty;
+
+            var logoBase64 = GetLogoBase64();
+            htmlContent = htmlContent.Replace("/images/fwu.png", logoBase64);
 
             var fullHtml = $"""
                 <!DOCTYPE html>
