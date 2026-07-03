@@ -12,13 +12,41 @@ public static class ApiEndpoints
 {
     private static IBrowser? _browser;
 
+    internal static void CloseBrowser()
+    {
+        if (_browser != null && !_browser.IsClosed)
+        {
+            _browser.Dispose();
+            _browser = null;
+        }
+    }
+
     private static async Task<IBrowser> GetBrowserAsync()
     {
         if (_browser == null || _browser.IsClosed)
         {
-            var browserFetcher = new BrowserFetcher();
-            await browserFetcher.DownloadAsync();
-            _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+            var chromePath = "/usr/bin/chromium-browser";
+            if (File.Exists(chromePath))
+            {
+                _browser = await Puppeteer.LaunchAsync(new LaunchOptions
+                {
+                    Headless = true,
+                    ExecutablePath = chromePath,
+                    Args = new[]
+                    {
+                        "--no-sandbox",
+                        "--disable-setuid-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu"
+                    }
+                });
+            }
+            else
+            {
+                var browserFetcher = new BrowserFetcher();
+                await browserFetcher.DownloadAsync();
+                _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
+            }
         }
         return _browser;
     }
