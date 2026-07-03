@@ -110,4 +110,6 @@ app.MapRazorPages();
 
 ApiEndpoints.Map(app);
 
+app.Lifetime.ApplicationStopping.Register(() => ApiEndpoints.CloseBrowser());
+
 app.Run();
