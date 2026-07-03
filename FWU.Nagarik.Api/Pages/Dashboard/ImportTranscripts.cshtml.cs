@@ -7,6 +7,7 @@ using FWU.Nagarik.Api.Services;
 namespace FWU.Nagarik.Api.Pages.Dashboard;
 
 [Authorize(Roles = AppRoles.Admin)]
+[RequestSizeLimit(50 * 1024 * 1024)] // 50 MB
 public class ImportTranscriptsModel(ICsvTranscriptImportService importService, IAuditService auditService) : PageModel
 {
     private readonly ICsvTranscriptImportService _importService = importService;

@@ -143,17 +143,9 @@ public class CsvTranscriptImportService : ICsvTranscriptImportService
                 var student = await ProcessStudentAsync(regdNo, firstRow, headerMap, uploadedBy, result);
                 if (student == null) continue;
 
-                var transcriptGroups = studentGroup
-                    .GroupBy(r => new
-                    {
-                        IssueNo = GetField(r.Row, headerMap, "IssueNo").Trim(),
-                        ProgramName = GetField(r.Row, headerMap, "ProgramName").Trim()
-                    })
-                    .ToList();
-
-                foreach (var transcriptGroup in transcriptGroups)
+                foreach (var item in studentGroup)
                 {
-                    await ProcessTranscriptRowsAsync(student, transcriptGroup.Select(r => r.Row).ToList(), headerMap, result);
+                    await ProcessTranscriptRowAsync(student, item.Row, headerMap, result);
                 }
 
                 await _dbContext.SaveChangesAsync();
@@ -267,94 +259,93 @@ public class CsvTranscriptImportService : ICsvTranscriptImportService
         return existing;
     }
 
-    private async Task ProcessTranscriptRowsAsync(Student student, List<string[]> rows, Dictionary<string, int> headerMap, ImportResult result)
+    private async Task ProcessTranscriptRowAsync(Student student, string[] row, Dictionary<string, int> headerMap, ImportResult result)
     {
-        var issueNoStr = GetField(rows.First(), headerMap, "IssueNo");
+        var issueNoStr = GetField(row, headerMap, "IssueNo");
         if (!int.TryParse(issueNoStr, out var issueSerialNo))
         {
             result.Errors.Add($"Invalid IssueNo '{issueNoStr}' for student '{student.RegdNo}'.");
             return;
         }
 
-        foreach (var row in rows)
+        var subjectCode = GetField(row, headerMap, "SubjectCode").Trim();
+
+        var existing = await _dbContext.Transcripts
+            .FirstOrDefaultAsync(t =>
+                t.RegdNo == student.RegdNo &&
+                t.IssueSerialNo == issueSerialNo &&
+                t.SubjectCode == subjectCode);
+
+        var yearStr = GetField(row, headerMap, "year").Trim();
+        var partStr = GetField(row, headerMap, "part").Trim();
+        var yearIdx = RomanToYear.GetValueOrDefault(yearStr, 0);
+        var partIdx = RomanToYear.GetValueOrDefault(partStr, 0);
+        var semesterNumber = (yearIdx * 2) + partIdx + 1;
+        var semesterName = SemesterNames.GetValueOrDefault(semesterNumber, $"Semester {semesterNumber}");
+
+        var creditHourStr = GetField(row, headerMap, "CreditHour");
+        double.TryParse(creditHourStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var creditHours);
+
+        var gradeLetter = GetField(row, headerMap, "GradeLetter").Trim();
+        var gradeValue = GradeMap.GetValueOrDefault(gradeLetter, 0.0);
+        var gradePoint = Math.Round(creditHours * gradeValue, 2);
+
+        var cgpaStr = GetField(row, headerMap, "CGPA");
+        double? cgpa = null;
+        if (double.TryParse(cgpaStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedCgpa))
+            cgpa = parsedCgpa;
+
+        var studentName = $"{student.FirstName} {student.MiddleName} {student.LastName}".Trim();
+
+        if (existing == null)
         {
-            var subjectCode = GetField(row, headerMap, "SubjectCode").Trim();
-
-            var existing = await _dbContext.Transcripts
-                .FirstOrDefaultAsync(t =>
-                    t.RegdNo == student.RegdNo &&
-                    t.IssueSerialNo == issueSerialNo &&
-                    t.SubjectCode == subjectCode);
-
-            var yearStr = GetField(row, headerMap, "year");
-            var partStr = GetField(row, headerMap, "part");
-            var yearIdx = RomanToYear.GetValueOrDefault(yearStr.Trim(), 0);
-            var partIdx = RomanToYear.GetValueOrDefault(partStr.Trim(), 0);
-            var semesterNumber = (yearIdx * 2) + partIdx + 1;
-            var semesterName = SemesterNames.GetValueOrDefault(semesterNumber, $"Semester {semesterNumber}");
-
-            var creditHourStr = GetField(row, headerMap, "CreditHour");
-            double.TryParse(creditHourStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var creditHours);
-
-            var gradeLetter = GetField(row, headerMap, "GradeLetter").Trim();
-            var gradeValue = GradeMap.GetValueOrDefault(gradeLetter, 0.0);
-            var gradePoint = Math.Round(creditHours * gradeValue, 2);
-
-            var cgpaStr = GetField(row, headerMap, "CGPA");
-            double? cgpa = null;
-            if (double.TryParse(cgpaStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedCgpa))
-                cgpa = parsedCgpa;
-
-            if (existing == null)
+            var transcript = new Transcript
             {
-                var transcript = new Transcript
-                {
-                    RegdNo = student.RegdNo,
-                    IssueSerialNo = issueSerialNo,
-                    IssueDate = DateTime.UtcNow,
-                    IsPrinted = false,
-                    StudentName = $"{student.FirstName} {student.MiddleName} {student.LastName}".Trim(),
-                    ProgramName = GetField(row, headerMap, "ProgramName"),
-                    FacultyName = GetField(row, headerMap, "FacultyName"),
-                    CollegeName = GetField(row, headerMap, "CollegeName"),
-                    AcademicYearName = GetField(row, headerMap, "AcademicYearName"),
-                    SemesterNumber = semesterNumber,
-                    SemesterName = semesterName,
-                    Year = yearStr.Trim(),
-                    Part = partStr.Trim(),
-                    ExamRollNo = GetField(row, headerMap, "ExamRollNo"),
-                    SubjectCode = subjectCode,
-                    SubjectName = GetField(row, headerMap, "SubjectName").Trim(),
-                    CreditHours = creditHours,
-                    Grade = gradeLetter,
-                    GradeValue = gradeValue,
-                    GradePoint = gradePoint,
-                    CGPA = cgpa,
-                    SortOrder = semesterNumber * 100 + (existing?.SortOrder ?? 0),
-                };
-                _dbContext.Transcripts.Add(transcript);
-                result.TranscriptsCreated++;
-            }
-            else
-            {
-                existing.StudentName = $"{student.FirstName} {student.MiddleName} {student.LastName}".Trim();
-                existing.ProgramName = GetField(row, headerMap, "ProgramName");
-                existing.FacultyName = GetField(row, headerMap, "FacultyName");
-                existing.CollegeName = GetField(row, headerMap, "CollegeName");
-                existing.AcademicYearName = GetField(row, headerMap, "AcademicYearName");
-                existing.SemesterNumber = semesterNumber;
-                existing.SemesterName = semesterName;
-                existing.Year = yearStr.Trim();
-                existing.Part = partStr.Trim();
-                existing.ExamRollNo = GetField(row, headerMap, "ExamRollNo");
-                existing.SubjectName = GetField(row, headerMap, "SubjectName").Trim();
-                existing.CreditHours = creditHours;
-                existing.Grade = gradeLetter;
-                existing.GradeValue = gradeValue;
-                existing.GradePoint = gradePoint;
-                existing.CGPA = cgpa;
-                result.TranscriptsUpdated++;
-            }
+                RegdNo = student.RegdNo,
+                IssueSerialNo = issueSerialNo,
+                IssueDate = DateTime.UtcNow,
+                IsPrinted = false,
+                StudentName = studentName,
+                ProgramName = GetField(row, headerMap, "ProgramName"),
+                FacultyName = GetField(row, headerMap, "FacultyName"),
+                CollegeName = GetField(row, headerMap, "CollegeName"),
+                AcademicYearName = GetField(row, headerMap, "AcademicYearName"),
+                SemesterNumber = semesterNumber,
+                SemesterName = semesterName,
+                Year = yearStr,
+                Part = partStr,
+                ExamRollNo = GetField(row, headerMap, "ExamRollNo"),
+                SubjectCode = subjectCode,
+                SubjectName = GetField(row, headerMap, "SubjectName").Trim(),
+                CreditHours = creditHours,
+                Grade = gradeLetter,
+                GradeValue = gradeValue,
+                GradePoint = gradePoint,
+                CGPA = cgpa,
+                SortOrder = semesterNumber * 100,
+            };
+            _dbContext.Transcripts.Add(transcript);
+            result.TranscriptsCreated++;
+        }
+        else
+        {
+            existing.StudentName = studentName;
+            existing.ProgramName = GetField(row, headerMap, "ProgramName");
+            existing.FacultyName = GetField(row, headerMap, "FacultyName");
+            existing.CollegeName = GetField(row, headerMap, "CollegeName");
+            existing.AcademicYearName = GetField(row, headerMap, "AcademicYearName");
+            existing.SemesterNumber = semesterNumber;
+            existing.SemesterName = semesterName;
+            existing.Year = yearStr;
+            existing.Part = partStr;
+            existing.ExamRollNo = GetField(row, headerMap, "ExamRollNo");
+            existing.SubjectName = GetField(row, headerMap, "SubjectName").Trim();
+            existing.CreditHours = creditHours;
+            existing.Grade = gradeLetter;
+            existing.GradeValue = gradeValue;
+            existing.GradePoint = gradePoint;
+            existing.CGPA = cgpa;
+            result.TranscriptsUpdated++;
         }
     }
 
