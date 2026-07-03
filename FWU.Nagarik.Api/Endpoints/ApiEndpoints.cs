@@ -25,13 +25,14 @@ public static class ApiEndpoints
     {
         if (_browser == null || _browser.IsClosed)
         {
-            var chromePath = "/usr/bin/chromium-browser";
-            if (File.Exists(chromePath))
+            var browserFetcher = new BrowserFetcher();
+            await browserFetcher.DownloadAsync();
+
+            if (OperatingSystem.IsLinux())
             {
                 _browser = await Puppeteer.LaunchAsync(new LaunchOptions
                 {
                     Headless = true,
-                    ExecutablePath = chromePath,
                     Args = new[]
                     {
                         "--no-sandbox",
@@ -43,8 +44,6 @@ public static class ApiEndpoints
             }
             else
             {
-                var browserFetcher = new BrowserFetcher();
-                await browserFetcher.DownloadAsync();
                 _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
             }
         }
