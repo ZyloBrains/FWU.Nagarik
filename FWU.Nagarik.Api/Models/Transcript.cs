@@ -19,10 +19,58 @@ public class Transcript
 
     public bool IsPrinted { get; set; }
 
-    public int? InstitutionId { get; set; }
+    [MaxLength(200)]
+    public string StudentName { get; set; } = string.Empty;
 
-    [ForeignKey(nameof(InstitutionId))]
-    public virtual Institution? Institution { get; set; }
+    [MaxLength(200)]
+    public string ProgramName { get; set; } = string.Empty;
 
-    public virtual ICollection<Semester> Semesters { get; set; } = new List<Semester>();
+    [MaxLength(200)]
+    public string FacultyName { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string CollegeName { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string AcademicYearName { get; set; } = string.Empty;
+
+    public int SemesterNumber { get; set; }
+
+    [MaxLength(50)]
+    public string SemesterName { get; set; } = string.Empty;
+
+    [MaxLength(10)]
+    public string Year { get; set; } = string.Empty;
+
+    [MaxLength(10)]
+    public string Part { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string ExamRollNo { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string SubjectCode { get; set; } = string.Empty;
+
+    [MaxLength(200)]
+    public string SubjectName { get; set; } = string.Empty;
+
+    [Column(TypeName = "decimal(5,2)")]
+    public double CreditHours { get; set; }
+
+    [MaxLength(10)]
+    public string Grade { get; set; } = string.Empty;
+
+    [Column(TypeName = "decimal(5,2)")]
+    public double GradeValue { get; set; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public double GradePoint { get; set; }
+
+    [MaxLength(10)]
+    public string? CourseType { get; set; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public double? CGPA { get; set; }
+
+    public int SortOrder { get; set; }
 }

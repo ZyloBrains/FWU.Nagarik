@@ -14,10 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<VerificationLog> VerificationLogs { get; set; }
     public DbSet<ApiKey> ApiKeys { get; set; }
     public DbSet<SyncRecord> SyncRecords { get; set; }
-    public DbSet<Institution> Institutions { get; set; }
     public DbSet<Transcript> Transcripts { get; set; }
-    public DbSet<Semester> Semesters { get; set; }
-    public DbSet<Subject> Subjects { get; set; }
     public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -82,12 +79,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.HasIndex(e => e.EntityName).IsUnique();
         });
 
-        modelBuilder.Entity<Institution>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.IsActive);
-        });
-
         modelBuilder.Entity<Student>(entity =>
         {
             entity.HasKey(e => e.Id);
@@ -99,28 +90,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
             entity.HasKey(e => e.Id);
             entity.Property(e => e.RegdNo).IsRequired();
             entity.HasIndex(e => e.RegdNo);
-            entity.HasIndex(e => e.IssueSerialNo).IsUnique();
-            entity.HasOne(e => e.Institution)
-                  .WithMany()
-                  .HasForeignKey(e => e.InstitutionId);
-        });
-
-        modelBuilder.Entity<Semester>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Transcript)
-                  .WithMany(t => t.Semesters)
-                  .HasForeignKey(e => e.TranscriptId)
-                  .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        modelBuilder.Entity<Subject>(entity =>
-        {
-            entity.HasKey(e => e.Id);
-            entity.HasOne(e => e.Semester)
-                  .WithMany(s => s.Subjects)
-                  .HasForeignKey(e => e.SemesterId)
-                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.RegdNo, e.IssueSerialNo, e.SubjectCode }).IsUnique();
         });
 
         modelBuilder.Entity<AuditLog>(entity =>

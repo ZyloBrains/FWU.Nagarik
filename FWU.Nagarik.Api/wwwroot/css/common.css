@@ -49,26 +49,6 @@ body {
     border: 1px solid #1a365d;
 }
 
-.corner {
-    position: absolute;
-    width: 16mm;
-    height: 16mm;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-}
-
-.corner-svg {
-    width: 16mm;
-    height: 16mm;
-}
-
-.top-left { top: 8mm; left: 8mm; transform: translate(-50%, -50%); }
-.top-right { top: 8mm; right: 8mm; transform: translate(50%, -50%); }
-.bottom-left { bottom: 8mm; left: 8mm; transform: translate(-50%, 50%); }
-.bottom-right { bottom: 8mm; right: 8mm; transform: translate(50%, 50%); }
-
 .content, .header-content {
     position: relative;
     z-index: 1;

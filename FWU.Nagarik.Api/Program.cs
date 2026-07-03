@@ -5,8 +5,19 @@ using FWU.Nagarik.Api.Services;
 using FWU.Nagarik.Api.Endpoints;
 using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Middleware;
+using Microsoft.AspNetCore.Http.Features;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 50 * 1024 * 1024; // 50 MB
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
+});
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -76,18 +87,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<IStudentRequestSyncService, StudentRequestSyncService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddScoped<ICsvTranscriptImportService, CsvTranscriptImportService>();
+builder.Services.AddScoped<IRazorViewRenderer, RazorViewRenderer>();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated();
-    
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    await Seeder.SeedAdminUser(userManager, roleManager);
-}
 
 app.UseSwagger();
 app.UseSwaggerUI(options =>

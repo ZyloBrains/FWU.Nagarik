@@ -1,0 +1,295 @@
+@model FWU.Nagarik.Api.ViewModels.TranscriptViewModel
+@{
+    Layout = null;
+    var data = Model;
+    var leftSemesters = data?.Semesters?.Where(s => s.SemesterNumber % 2 == 1).ToList() ?? new();
+    var rightSemesters = data?.Semesters?.Where(s => s.SemesterNumber % 2 == 0).ToList() ?? new();
+}
+
+<style>
+    .border-inner {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-content {
+        padding: 5px 15px;
+        flex: 1;
+    }
+
+    .header-top {
+        margin-bottom: 8px;
+    }
+
+    .university-name {
+        font-size: 28px;
+        letter-spacing: 2px;
+        margin-bottom: 0;
+    }
+
+    .office-text {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .tagline {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    .doc-title {
+        font-size: 20px;
+        letter-spacing: 3px;
+        margin: 12px 0 15px;
+        padding-bottom: 8px;
+    }
+
+    .logo-container {
+        margin: 8px 0;
+    }
+
+    .main-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .student-info-box {
+        padding: 8px 12px;
+        font-size: 10px;
+        margin-bottom: 10px;
+    }
+
+    .info-col {
+        grid-template-columns: 90px auto;
+        gap: 4px;
+    }
+
+    .grades-wrapper {
+        overflow: hidden;
+    }
+
+    .grades-half {
+        font-size: 8px;
+    }
+
+    .semester-header {
+        font-size: 8px;
+    }
+
+    .gpa-label {
+        padding-right: 8px;
+        font-size: 8px;
+    }
+
+    .gpa-val {
+        font-size: 9px;
+    }
+
+    .sig-block {
+        width: 22%;
+    }
+
+    .sig-line {
+        font-size: 10px;
+    }
+
+    .date-val {
+        min-width: 120px;
+    }
+
+    .seal-placeholder {
+        width: 55px;
+        height: 55px;
+        font-size: 6.5px;
+        line-height: 1.2;
+    }
+
+    table {
+        margin-bottom: 8px;
+    }
+
+    th,
+    td {
+        padding: 2px 4px;
+        font-size: 7.5px;
+    }
+
+    .col-code {
+        width: 14%;
+    }
+
+    .col-title {
+        width: 42%;
+    }
+
+    .col-cr,
+    .col-grade,
+    .col-val,
+    .col-point {
+        width: 10%;
+    }
+
+    .hologram-placeholder {
+        right: 25px;
+        top: 55px;
+        width: 50px;
+        height: 50px;
+        font-size: 7px;
+    }
+</style>
+
+@if (data != null)
+{
+    <div class="header-content">
+        <div class="header-top">
+            <div>Issue Number <span class="serial-no">@data.IssueSerialNo</span></div>
+        </div>
+
+        <div class="university-name">@data.UniversityName</div>
+        <div class="office-text">@data.OfficeName</div>
+        <div class="tagline">@data.UniversityLocation</div>
+
+        <div class="logo-container">
+            <svg class="main-logo" viewBox="0 0 100 100">
+                <image href="/images/fwu.png" x="2" y="2" width="96" height="96" />
+                <circle cx="50" cy="50" r="49" fill="none" stroke="#1a365d" stroke-width="1" />
+            </svg>
+        </div>
+
+        <div class="doc-title">@data.DocumentTitle</div>
+
+        <div class="hologram-placeholder">HOLOGRAM<br>SEAL</div>
+
+        <div class="student-info-box">
+            <div class="info-col">
+                <div>Name of Student:</div>
+                <div class="val">@data.StudentName</div>
+                <div>Regd. No.:</div>
+                <div class="val">@data.RegdNo</div>
+                <div>Faculty:</div>
+                <div class="val">@data.Faculty</div>
+                <div>Degree:</div>
+                <div class="val">@data.ProgramName</div>
+            </div>
+            <div class="info-col">
+                <div>Course Duration:</div>
+                <div class="val">@data.CourseDuration</div>
+                <div>Campus:</div>
+                <div class="val">@data.CampusName<br>@data.CampusLocation</div>
+            </div>
+        </div>
+
+        <div class="grades-wrapper">
+            <div class="grades-half">
+                <table>
+                    <tr>
+                        <th colspan="2">Course Title</th>
+                        <th class="col-cr">Cr.<br>Hrs</th>
+                        <th class="col-grade">Grade</th>
+                        <th class="col-val">Grade<br>Value</th>
+                        <th class="col-point">Grade<br>Point</th>
+                    </tr>
+
+                    @foreach (var semester in leftSemesters)
+                    {
+                        <tr>
+                            <th colspan="6" class="semester-header">@semester.Name</th>
+                        </tr>
+                        @foreach (var subject in semester.Subjects)
+                        {
+                            <tr>
+                                <td class="col-code">@subject.SubjectCode</td>
+                                <td class="col-title">@subject.SubjectName</td>
+                                <td>@subject.CreditHours</td>
+                                <td>@subject.Grade</td>
+                                <td>@subject.GradeValue.ToString("F2")</td>
+                                <td>@subject.GradePoint.ToString("F2")</td>
+                            </tr>
+                        }
+                        <tr class="total-row">
+                            <td colspan="2" class="total-label">Total</td>
+                            <td>@semester.TotalCreditHours</td>
+                            <td></td>
+                            <td></td>
+                            <td>@semester.TotalGradePoints.ToString("F2")</td>
+                        </tr>
+                        <tr class="gpa-row">
+                            <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                            <td class="gpa-val">@semester.Gpa.ToString("F2")</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <div class="grades-half">
+                <table>
+                    <tr>
+                        <th colspan="2">Course Title</th>
+                        <th class="col-cr">Cr.<br>Hrs</th>
+                        <th class="col-grade">Grade</th>
+                        <th class="col-val">Grade<br>Value</th>
+                        <th class="col-point">Grade<br>Point</th>
+                    </tr>
+
+                    @foreach (var semester in rightSemesters)
+                    {
+                        <tr>
+                            <th colspan="6" class="semester-header">@semester.Name</th>
+                        </tr>
+                        @foreach (var subject in semester.Subjects)
+                        {
+                            <tr>
+                                <td class="col-code">@subject.SubjectCode</td>
+                                <td class="col-title">@subject.SubjectName</td>
+                                <td>@subject.CreditHours</td>
+                                <td>@subject.Grade</td>
+                                <td>@subject.GradeValue.ToString("F2")</td>
+                                <td>@subject.GradePoint.ToString("F2")</td>
+                            </tr>
+                        }
+                        <tr class="total-row">
+                            <td colspan="2" class="total-label">Total</td>
+                            <td>@semester.TotalCreditHours</td>
+                            <td></td>
+                            <td></td>
+                            <td>@semester.TotalGradePoints.ToString("F2")</td>
+                        </tr>
+                        <tr class="gpa-row">
+                            <td colspan="5" class="gpa-label">Grade Point Average (G.P.A.)</td>
+                            <td class="gpa-val">@semester.Gpa.ToString("F2")</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="sig-row">
+                <div class="sig-block">
+                    <div class="sig-line">Prepared by</div>
+                </div>
+                <div class="sig-block">
+                    <div class="sig-line">Checked by</div>
+                </div>
+                <div class="sig-block">
+                    <div class="sig-line">Record Section</div>
+                </div>
+                <div class="sig-block">
+                    <div class="sig-line">Controller of Examinations</div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div>DATE OF ISSUE: <span class="date-val">@data.IssueDate</span></div>
+                <div>CGPA: <span class="date-val fw-bold">@data.Cgpa.ToString("F2")</span></div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="header-content text-center py-5">
+        <h4>Academic Transcript</h4>
+        <p class="text-muted">No transcript data available.</p>
+    </div>
+}

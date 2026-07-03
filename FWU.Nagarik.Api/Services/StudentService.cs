@@ -89,16 +89,14 @@ public class StudentService(Data.AppDbContext dbContext) : IStudentService
         if (student == null)
             return null;
 
-        var transcript = await _dbContext.Transcripts
-            .Include(t => t.Institution)
-            .Include(t => t.Semesters)
-                .ThenInclude(s => s.Subjects)
-            .FirstOrDefaultAsync(t => t.RegdNo == registrationNumber);
+        var transcripts = await _dbContext.Transcripts
+            .Where(t => t.RegdNo == registrationNumber)
+            .ToListAsync();
 
-        if (transcript == null)
+        if (transcripts.Count == 0)
             return null;
 
-        var transcriptViewModel = TranscriptMapper.ToViewModel(transcript, student);
+        var transcriptViewModel = TranscriptMapper.ToViewModel(transcripts, student);
 
         return new TranscriptResponse
         {

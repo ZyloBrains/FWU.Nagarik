@@ -4,6 +4,7 @@ using FWU.Nagarik.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FWU.Nagarik.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701155632_AddCSVTranscripts")]
+    partial class AddCSVTranscripts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,6 +230,88 @@ namespace FWU.Nagarik.Api.Migrations
                     b.ToTable("AuditLogs");
                 });
 
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Institution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CurrentSerialNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DocumentTitle")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LogoPath")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("OfficeName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
+
+                    b.ToTable("Institutions");
+                });
+
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Semester", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AcademicYear")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ExamRollNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("SemesterNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TranscriptId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TranscriptId");
+
+                    b.ToTable("Semesters");
+                });
+
             modelBuilder.Entity("FWU.Nagarik.Api.Models.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -342,6 +427,55 @@ namespace FWU.Nagarik.Api.Migrations
                     b.ToTable("StudentRequests");
                 });
 
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Subject", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CourseType")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<decimal>("CreditHours")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("Grade")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<decimal>("GradePoint")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("GradeValue")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("SemesterId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubjectCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("SubjectName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SemesterId");
+
+                    b.ToTable("Subjects");
+                });
+
             modelBuilder.Entity("FWU.Nagarik.Api.Models.SyncRecord", b =>
                 {
                     b.Property<int>("Id")
@@ -380,46 +514,8 @@ namespace FWU.Nagarik.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AcademicYearName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal?>("CGPA")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<string>("CollegeName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("CourseType")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<decimal>("CreditHours")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<string>("ExamRollNo")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("FacultyName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Grade")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<decimal>("GradePoint")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<decimal>("GradeValue")
-                        .HasColumnType("decimal(5,2)");
+                    b.Property<int?>("InstitutionId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsPrinted")
                         .HasColumnType("bit");
@@ -430,58 +526,19 @@ namespace FWU.Nagarik.Api.Migrations
                     b.Property<int>("IssueSerialNo")
                         .HasColumnType("int");
 
-                    b.Property<string>("Part")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("ProgramName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<string>("RegdNo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("SemesterName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("SemesterNumber")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SortOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StudentName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("SubjectCode")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("SubjectName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RegdNo");
+                    b.HasIndex("InstitutionId");
 
-                    b.HasIndex("RegdNo", "IssueSerialNo", "SubjectCode")
+                    b.HasIndex("IssueSerialNo")
                         .IsUnique();
+
+                    b.HasIndex("RegdNo");
 
                     b.ToTable("Transcripts");
                 });
@@ -703,6 +760,17 @@ namespace FWU.Nagarik.Api.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Semester", b =>
+                {
+                    b.HasOne("FWU.Nagarik.Api.Models.Transcript", "Transcript")
+                        .WithMany("Semesters")
+                        .HasForeignKey("TranscriptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Transcript");
+                });
+
             modelBuilder.Entity("FWU.Nagarik.Api.Models.StudentRequest", b =>
                 {
                     b.HasOne("FWU.Nagarik.Api.Models.Student", "StudentAdmission")
@@ -712,6 +780,26 @@ namespace FWU.Nagarik.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("StudentAdmission");
+                });
+
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Subject", b =>
+                {
+                    b.HasOne("FWU.Nagarik.Api.Models.Semester", "Semester")
+                        .WithMany("Subjects")
+                        .HasForeignKey("SemesterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Semester");
+                });
+
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Transcript", b =>
+                {
+                    b.HasOne("FWU.Nagarik.Api.Models.Institution", "Institution")
+                        .WithMany()
+                        .HasForeignKey("InstitutionId");
+
+                    b.Navigation("Institution");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -763,6 +851,16 @@ namespace FWU.Nagarik.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Semester", b =>
+                {
+                    b.Navigation("Subjects");
+                });
+
+            modelBuilder.Entity("FWU.Nagarik.Api.Models.Transcript", b =>
+                {
+                    b.Navigation("Semesters");
                 });
 #pragma warning restore 612, 618
         }
