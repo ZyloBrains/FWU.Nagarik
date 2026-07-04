@@ -6,6 +6,7 @@ using FWU.Nagarik.Api.Authentication;
 using FWU.Nagarik.Api.Data;
 using FWU.Nagarik.Api.Mappers;
 using FWU.Nagarik.Api.Services;
+using FWU.Nagarik.Api.Data.Constants;
 
 namespace FWU.Nagarik.Api.Endpoints;
 public static class ApiEndpoints
@@ -27,25 +28,11 @@ public static class ApiEndpoints
         {
             var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync();
-
-            if (OperatingSystem.IsLinux())
+            _browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                _browser = await Puppeteer.LaunchAsync(new LaunchOptions
-                {
-                    Headless = true,
-                    Args = new[]
-                    {
-                        "--no-sandbox",
-                        "--disable-setuid-sandbox",
-                        "--disable-dev-shm-usage",
-                        "--disable-gpu"
-                    }
-                });
-            }
-            else
-            {
-                _browser = await Puppeteer.LaunchAsync(new LaunchOptions { Headless = true });
-            }
+                Headless = true,
+                Args = ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+            });
         }
         return _browser;
     }
@@ -151,7 +138,7 @@ public static class ApiEndpoints
         .WithSummary("Retrieves student transcript as PDF")
         .WithDescription("Retrieves the transcript for a student as a PDF document based on registration number and date of birth.");
 
-        app.MapGet("/api/admin/transcript/html", [Authorize(Roles = "Admin")] async (
+        app.MapGet("/api/admin/transcript/html", [Authorize(Roles = AppRoles.Admin)] async (
             string regdNo,
             AppDbContext db,
             IRazorViewRenderer viewRenderer,
@@ -195,7 +182,7 @@ public static class ApiEndpoints
             return Results.Content(wrappedHtml, "text/html");
         })
         .WithName("GetTranscriptHtml")
-        .WithSummary("Retrieves student transcript as HTML")
+        .WithSummary("Retrieves student transcript as HTML (Admin use Only)")
         .WithDescription("Retrieves the transcript for a student as styled HTML for admin preview.");
     }
 }
